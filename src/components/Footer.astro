@@ -10,6 +10,12 @@ const {
   meta = `Translation by ${siteConfig.translator}`,
   annotation = siteConfig.annotation,
 } = Astro.props;
+
+// Set by GitHub Actions to the commit being built; absent in local builds
+const commit = process.env.GITHUB_SHA;
+const repoUrl = siteConfig.repository?.url.replace(/\/+$/, "");
+const commitUrl = repoUrl && (commit ? `${repoUrl}/commit/${commit}` : `${repoUrl}/commits/`);
+const commitLabel = commit ? commit.slice(0, 7) : "dev";
 ---
 
 <footer class="border-border mt-12 border-t py-8 ">
@@ -28,6 +34,17 @@ const {
         <p class="font-ui text-muted-foreground text-xs text-center text-balance leading-relaxed max-w-md mx-auto mt-6">
           {siteConfig.rightsNotice}
         </p>
+      )}
+      {commitUrl && (
+        <a
+          href={commitUrl}
+          target="_blank"
+          rel="noopener"
+          class="font-code text-muted-foreground text-xs mt-4 link-hover"
+          title={commit ? `Built from commit ${commit}` : "Local build"}
+        >
+          {commitLabel}
+        </a>
       )}
     </div>
   </div>
