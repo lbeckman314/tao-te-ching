@@ -7,7 +7,7 @@ interface Props {
   type?: "website" | "article";
   publishedTime?: Date;
   tags?: string[];
-  image?: string;    // post cover used for display context, not OG
+  image?: string;    // chapter cover used for display context, not OG
   ogImage?: string;  // explicit OG image path takes priority for social sharing
   noindex?: boolean;
 }
@@ -31,7 +31,7 @@ const resolvedOgImage = ogImage
   ? new URL(ogImage, siteConfig.url).href
   : image
   ? new URL(image, siteConfig.url).href
-  : new URL('/og/default.png', siteConfig.url).href;
+  : new URL('/og.png', siteConfig.url).href;
 ---
 
 <!-- Core -->

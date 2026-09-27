@@ -1,0 +1,60 @@
+---
+import { type Chapter, getChapterUrl } from "@/utils/content";
+import ArrowLeft from "@/assets/arrow-left.svg";
+import ArrowRight from "@/assets/arrow-right.svg";
+
+interface Props {
+  prevChapter?: Chapter;
+  nextChapter?: Chapter;
+}
+
+const { prevChapter, nextChapter } = Astro.props;
+---
+<section class="flex flex-col">
+  <nav class="post-navigation my-2" aria-label="Chapter navigation">
+    {/* GLOBAL PREV / NEXT */}
+    {(prevChapter || nextChapter) && (
+      <div class:list={[
+	        "post-nav flex flex-row flex-wrap gap-4 text-sm",
+          {
+            "md:justify-between": !(prevChapter && nextChapter),
+          }
+        ]}>
+          {prevChapter && (
+            <a
+              href={getChapterUrl(
+                  prevChapter.id,
+                  prevChapter.filePath
+                )}
+	              class="group flex flex-1 flex-col gap-1 no-underline transition-colors"
+            >
+              <div class="flex items-center justify-start gap-2 group inline-cta text-muted-foreground">
+                Previous Article
+              </div>
+              <span class="text-base md:text-lg font font-medium font-content leading-snug text-foreground link-hover">
+                {prevChapter.data.title}
+              </span>
+            </a>
+          )}
+
+          {nextChapter && (
+            <a
+              href={getChapterUrl(
+                  nextChapter.id,
+                  nextChapter.filePath
+                )}
+	              class="group flex flex-1 flex-col gap-1 text-right no-underline transition-colors"
+            >
+              <div class="flex items-center justify-end gap-2 group inline-cta text-muted-foreground">
+                Next Article
+              </div>
+              <span class="text-base md:text-lg font-medium font-content leading-snug text-foreground link-hover">
+                {nextChapter.data.title}
+              </span>
+            </a>
+          )}
+      </div>
+    )}
+  </nav>
+  <div class="divider" />
+</section>

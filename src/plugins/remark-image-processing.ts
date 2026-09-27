@@ -6,7 +6,7 @@ import type { Root, Image, Paragraph } from 'mdast';
  * Consolidated image processing plugin for Astro Base
  *
  * Handles:
- * - Image path resolution for posts/ and pages/ collections
+ * - Image path resolution for chapters/ and pages/ collections
  * - Image captions from title attribute
  * - Image grid class assignment for consecutive images
  * - loading="lazy" and decoding="async" on all images
@@ -41,7 +41,7 @@ function resolveImagePaths(tree: Root, file: any) {
       return;
     }
 
-    // Obsidian absolute vault path e.g. posts/forts-of-sahyadri/rajgad/attachments/image.jpg
+    // Obsidian absolute vault path e.g. chapters/forts-of-sahyadri/rajgad/attachments/image.jpg
     // or pages/attachments/me-wide.jpg
     // Derive content root from file path and strip it
     if (file?.path) {
@@ -53,10 +53,10 @@ function resolveImagePaths(tree: Root, file: any) {
           .slice(contentIndex + '/src/content/'.length)
           .replace(/\/[^/]+\.md$/, '');
 
-        // contentRoot = posts/forts-of-sahyadri/rajgad  or  pages/about
+        // contentRoot = chapters/forts-of-sahyadri/rajgad  or  pages/about
 
         // Case 1: url is under this specific content entry's path
-        // posts/my-post/attachments/image.jpg from posts/my-post/index.md
+        // chapters/my-chapter/attachments/image.jpg from chapters/my-chapter/index.md
         if (url.startsWith(`${contentRoot}/`)) {
           node.url = `./${url.slice(contentRoot.length + 1)}`;
           return;
@@ -65,7 +65,7 @@ function resolveImagePaths(tree: Root, file: any) {
         // Case 2: vault-absolute path within the same collection
         // pages/attachments/me-wide.jpg from pages/about.md
         // Strip the collection name prefix — file is already inside that collection dir
-        const collectionName = contentRoot.split('/')[0]; // 'pages' or 'posts'
+        const collectionName = contentRoot.split('/')[0]; // 'pages' or 'chapters'
         if (url.startsWith(`${collectionName}/`)) {
           // pages/attachments/me-wide.jpg → attachments/me-wide.jpg → ./attachments/me-wide.jpg
           const pathWithinCollection = url.slice(collectionName.length + 1);

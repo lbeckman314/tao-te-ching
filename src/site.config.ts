@@ -16,6 +16,7 @@ export interface UserConfig {
   description: string;
   url: string;
   author: string;
+  translator: string;
 
   avatar?: string;
   logo?: string;
@@ -26,10 +27,11 @@ export interface UserConfig {
   social?: SocialItem[];
 
   footerCredits?: string;
+  rightsNotice?: string;
 
-  postsPerPage?: number;
-  recentPosts?: number;
-  relatedPosts?: number;
+  chaptersPerPage?: number;
+  recentChapters?: number;
+  relatedChapters?: number;
 
   showLogo?: boolean;
   showThemeToggle?: boolean;
@@ -46,6 +48,7 @@ const siteConfig = {
   description: userConfig.description,
   url: userConfig.url,
   author: userConfig.author,
+  translator: userConfig.translator,
 
   avatar: userConfig.avatar,
   logo: userConfig.logo,
@@ -56,10 +59,11 @@ const siteConfig = {
   social: userConfig.social ?? [],
 
   footerCredits: userConfig.footerCredits,
+  rightsNotice: userConfig.rightsNotice,
 
-  postsPerPage: userConfig.postsPerPage ?? 8,
-  recentPosts: userConfig.recentPosts ?? 6,
-  relatedPosts: userConfig.relatedPosts ?? 4,
+  chaptersPerPage: userConfig.chaptersPerPage ?? 8,
+  recentChapters: userConfig.recentChapters ?? 6,
+  relatedChapters: userConfig.relatedChapters ?? 4,
 
   showLogo: userConfig.showLogo ?? false,
   showThemeToggle: userConfig.showThemeToggle ?? true,

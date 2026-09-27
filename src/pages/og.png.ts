@@ -4,24 +4,24 @@ import type {
   APIRoute,
 } from "astro";
 
+import siteConfig from "@/site.config";
+
 import {
   generateOgImage,
 } from "@/utils/og";
 
 export const GET: APIRoute =
-  async (context) => {
+  async () => {
     const png =
       await generateOgImage(
         {
-          title: "Lipi",
+          // The OG fonts have no CJK glyphs, so drop the Chinese title
+          title: siteConfig.title.replace(/[　-鿿]/g, "").trim(),
 
           description:
-            "A minimal editorial theme for Astro focused on typography, chronology, and longform publishing.",
+            siteConfig.description,
 
-          category:
-            "Astro Theme",
-
-          site: "https://astro-lipi.pages.dev",
+          site: siteConfig.url,
         }
       );
 

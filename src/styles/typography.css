@@ -167,8 +167,7 @@
   }
 
   /* Attribution / cite inside blockquote */
-  .app-prose :where(blockquote cite),
-  .app-prose :where(blockquote p:last-child:not(:first-child)) {
+  .app-prose :where(blockquote cite) {
     @apply not-italic text-xs text-muted-foreground mt-2 block;
   }
   
@@ -230,13 +229,5 @@
 
   .app-prose :where(summary):focus-visible {
     @apply outline-accent outline-2 outline-dashed outline-offset-4;
-  }
-
-  @media (min-width: 768px) {
-    .post-content > p:first-of-type::first-letter {
-      @apply text-primary font-content font-semibold;
-      initial-letter: 3;
-      margin-inline-end: 0.25em;
-    }
   }
 }

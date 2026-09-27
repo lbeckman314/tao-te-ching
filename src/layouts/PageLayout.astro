@@ -5,10 +5,10 @@ import SEO from "@/components/SEO.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Footer from "@/components/Footer.astro";
 import siteConfig from "@/site.config";
-import { type Page, type Post } from "@/utils/content";
+import { type Page, type Chapter } from "@/utils/content";
 
 interface Props {
-  entry?: Page | Post;
+  entry?: Page | Chapter;
   title?: string;
   description?: string;
   showBreadcrumb?: boolean;
@@ -54,17 +54,12 @@ const formattedDate = last?.toLocaleDateString("en-US", {
   month: "long",
 });
 
-const ogImage = entry
-  ? `/og/${entry.id}.png`
-  : undefined;
-
 ---
 <BaseLayout schema={schema}>
   <SEO
     slot="seo"
     title={title}
     description={description ?? ""}
-    ogImage={ogImage}
     {noindex}
   />
   <Fragment slot="header">

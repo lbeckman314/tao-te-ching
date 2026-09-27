@@ -1,0 +1,50 @@
+---
+import { render } from "astro:content";
+import ChapterLayout from "@/layouts/ChapterLayout.astro";
+import { type Chapter, getAllChapters, getChapterSlug, getAdjacentChapters } from "@/utils/content";
+
+export const getStaticPaths = async () => {
+  const chapters = await getAllChapters();
+
+  return chapters.map((chapter) => {
+    const { prevChapter, nextChapter } =
+      getAdjacentChapters(chapters, chapter);
+
+    return {
+      params: {
+        slug: getChapterSlug(
+          chapter.id,
+          chapter.filePath
+        ),
+      },
+
+      props: {
+        chapter,
+        prevChapter,
+        nextChapter,
+      },
+    };
+  });
+};
+
+type Props = {
+  chapter: Chapter;
+  prevChapter: Chapter | null;
+  nextChapter: Chapter | null;
+};
+
+const {
+  chapter,
+  prevChapter,
+  nextChapter,
+} = Astro.props;
+
+const { Content } = await render(chapter);
+---
+<ChapterLayout
+  chapter={chapter}
+  prevChapter={prevChapter}
+  nextChapter={nextChapter}
+>
+  <Content />
+</ChapterLayout>

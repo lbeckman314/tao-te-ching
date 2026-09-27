@@ -2,11 +2,11 @@
  * Image Utilities
  *
  * Gallery image resolution and cover image resolution for
- * folder-based post structure.
+ * folder-based chapter structure.
  *
  * Reads from:
- *   src/content/posts/{postDir}/gallery/      — dedicated gallery images
- *   src/content/posts/{postDir}/attachments/  — inline and cover images
+ *   src/content/chapters/{chapterDir}/gallery/      — dedicated gallery images
+ *   src/content/chapters/{chapterDir}/attachments/  — inline and cover images
  */
 
 import type { ImageMetadata } from 'astro';
@@ -40,10 +40,10 @@ const allAttachmentImages = import.meta.glob<{ default: ImageMetadata }>(
 // ============================================================================
 
 /**
- * Derive post directory name from entry.filePath
- * e.g. src/content/posts/2026-03-rajgad/index.md → 2026-03-rajgad
+ * Derive chapter directory name from entry.filePath
+ * e.g. src/content/chapters/2026-03-rajgad/index.md → 2026-03-rajgad
  */
-export function extractPostDir(filePath: string): string {
+export function extractChapterDir(filePath: string): string {
   const parts = filePath.split('/');
   return parts[parts.length - 2] || '';
 }
@@ -79,13 +79,13 @@ export function shuffleArray<T>(array: T[]): T[] {
  * Resolve a vault-absolute image path to a glob key.
  *
  * Handles:
- *   posts/2011-03-21-bhuleshwar/attachments/image.jpg
- *   → /src/content/posts/2011-03-21-bhuleshwar/attachments/image.jpg
+ *   chapters/2011-03-21-bhuleshwar/attachments/image.jpg
+ *   → /src/content/chapters/2011-03-21-bhuleshwar/attachments/image.jpg
  */
 function vaultPathToGlobKey(vaultPath: string): string {
   // Already a glob key
   if (vaultPath.startsWith('/src/content/')) return vaultPath;
-  // Vault-absolute: posts/...
+  // Vault-absolute: chapters/...
   if (vaultPath.startsWith('travels/')) return `/src/content/${vaultPath}`;
   // Fallback
   return `/src/content/${vaultPath}`;
@@ -96,7 +96,7 @@ function vaultPathToGlobKey(vaultPath: string): string {
 // ============================================================================
 
 /**
- * Resolve a post's cover frontmatter value to ImageMetadata.
+ * Resolve a chapter's cover frontmatter value to ImageMetadata.
  *
  * Accepts vault-absolute Obsidian paths with or without [[ ]] brackets:
  *   [[travels/2011-03-21-bhuleshwar/attachments/image.jpg]]
@@ -164,15 +164,15 @@ export function getCoverImage(
 // ============================================================================
 
 /**
- * Get gallery images for a post, sorted by filename.
- * Reads from src/content/travels/{postDir}/gallery/
+ * Get gallery images for a chapter, sorted by filename.
+ * Reads from src/content/chapters/{chapterDir}/gallery/
  */
 export function getGalleryImages(filePath: string): GalleryImage[] {
-  const postDir = extractPostDir(filePath);
-  if (!postDir) return [];
+  const chapterDir = extractChapterDir(filePath);
+  if (!chapterDir) return [];
 
   return Object.entries(allGalleryImages)
-    .filter(([path]) => path.includes(`/posts/${postDir}/gallery/`))
+    .filter(([path]) => path.includes(`/chapters/${chapterDir}/gallery/`))
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([path, mod]) => {
       const filename = path.split('/').pop() ?? '';
@@ -185,7 +185,7 @@ export function getGalleryImages(filePath: string): GalleryImage[] {
 }
 
 /**
- * Check if a post has a gallery — use for conditional rendering decisions.
+ * Check if a chapter has a gallery — use for conditional rendering decisions.
  */
 export function hasGallery(filePath: string): boolean {
   return getGalleryImages(filePath).length > 0;

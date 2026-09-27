@@ -1,0 +1,161 @@
+---
+import siteConfig from "@/site.config";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { type Chapter, getChapterUrl } from "@/utils/content";
+import { slugify } from "@/utils/text";
+import { getCoverImage, getGalleryImages } from "@/utils/image";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import ShareChapter from "@/components/content/ShareChapter.astro";
+import SEO from "@/components/SEO.astro";
+import ChapterNavigation from "@/components/content/ChapterNavigation.astro";
+import { generateChapterSchema } from "@/utils/schema";
+import ChapterMeta from "@/components/content/ChapterMeta.astro";
+import Footer from "@/components/Footer.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import ImageWrapper from "@/components/ImageWrapper.astro";
+import ChapterGallery from "@/components/content/ChapterGallery.astro";
+import GalleryInit from "@/components/GalleryInit.astro";
+
+type Props = {
+  chapter: Chapter;
+  prevChapter?: Chapter | null;
+  nextChapter?: Chapter | null;
+};
+
+const {
+  chapter,
+  prevChapter,
+  nextChapter,
+} = Astro.props;
+
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat("en", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(date);
+}
+
+function formatMonthYear(date: Date) {
+  return new Intl.DateTimeFormat("en", {
+    year: "numeric",
+    month: "long",
+  })
+    .format(date)
+    .toUpperCase();
+}
+const { title, description, cover, published, tags } = chapter.data;
+
+const ogImage = `${getChapterUrl(chapter.id, chapter.filePath)}/index.png`;
+const structuredData = generateChapterSchema(chapter);
+const coverImage = getCoverImage(cover);
+const galleryImages = getGalleryImages(chapter.filePath ?? '');
+---
+
+<BaseLayout schema={structuredData}>
+  <SEO
+    slot="seo"
+    {title}
+    description={description ?? ""}
+    type="article"
+    publishedTime={published}
+    {tags}
+    {ogImage}
+  />
+  <Fragment slot="header">
+    <Breadcrumb />
+    <!-- Chapter Header -->
+    <header class="space-y-4">
+      <!-- Title -->
+      <h1
+          class="text-3xl leading-tight tracking-tight font-medium md:text-4xl mb-2 text-balance"
+          transition:name={slugify(chapter.data.title.replaceAll(".", "-"))}
+      >
+          {chapter.data.title}
+      </h1>
+
+      <!-- Description -->
+      {
+        chapter.data.description && (
+          <p class="max-w-xl text-base text-prettyfont-content italic font-light leading-relaxed text-muted-foreground">
+            {chapter.data.description}
+          </p>
+        )
+      }
+
+      <!-- Metadata -->
+      <div class="post-meta flex flex-row items-baseline gap-2 mb-3 text-xs font-ui text-muted-foreground">
+        <ChapterMeta chapter={chapter} accentCategory showReadingTime />
+      </div>
+      <div class="divider" />
+    </header>
+  </Fragment>
+
+  <section>
+    <!-- Cover -->
+    {coverImage && (
+      <section class="breakout overflow-hidden rounded-sm ring ring-border shadow-sm">
+        <ImageWrapper src={coverImage} alt={title} class="block w-full h-auto" fetchPriority="high" />
+      </section>
+    )}
+
+    <!-- Chapter Content -->
+    <article data-pagefind-body class="post-content flex flex-col space-y-2">
+      <meta data-pagefind-meta="title[content]" content={title} />
+	    <meta data-pagefind-filter="collection[content]" content={chapter.collection} />
+      {tags?.map((tag) => (
+        <meta data-pagefind-filter="tag[content]" content={tag} />
+      ))}
+      <!-- Rendered markdown -->
+	    <div class="app-prose post-content">
+	      <slot />
+        <hr />
+	    </div>
+      <!-- Galley -->
+      {galleryImages.length > 0 && (
+        <ChapterGallery images={galleryImages} galleryId={chapter.id} />
+      )}
+	  </article>
+
+    {/* Chapter annotation — document-level context, chapters only, no footer fallback */}
+    {chapter.data.annotation && (
+      <span class="font-annotation block text-primary max-w-70 md:max-w-80 mt-4 text-xl md:text-2xl -rotate-1 leading-snug">
+        {chapter.data.annotation}
+      </span>
+    )}
+
+    <!-- Tags -->
+    {
+      chapter.data.tags &&
+        chapter.data.tags.length > 0 && (
+          <div class="flex flex-wrap items-baseline gap-3">
+            <SectionHeader title="filed under" />
+            {chapter.data.tags.map(
+              (tag) => (
+                <a
+                  href={`/tags/${slugify(tag)}`}
+                  class="text-sm underline font-ui text-muted-foreground link-hover"
+                >
+                  {tag}
+                </a>
+              )
+            )}
+          </div>
+        )
+    }
+    <ShareChapter title={chapter.data.title} />
+    <div class="divider" />
+  </section>
+
+  <Fragment slot="navigation">
+    <ChapterNavigation
+      prevChapter={prevChapter}
+      nextChapter={nextChapter}
+    />
+  </Fragment>
+
+  <Fragment slot="footer">
+    <Footer />
+  </Fragment>
+
+</BaseLayout>

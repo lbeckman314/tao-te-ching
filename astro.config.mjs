@@ -9,6 +9,7 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { rawFonts } from "./src/plugins/rawFonts";
 import { unified } from '@astrojs/markdown-remark';
+import remarkBreaks from 'remark-breaks';
 import remarkCallouts from './src/plugins/remark-callouts';
 import { remarkImageProcessing } from './src/plugins/remark-image-processing';
 import { remarkExternalLinks } from './src/plugins/remark-external-links.ts';
@@ -135,6 +136,7 @@ export default defineConfig({
         remarkExternalLinks,
         remarkImageProcessing,
         remarkCallouts,
+        remarkBreaks,
       ],
       rehypePlugins: [
         rehypeSlug,

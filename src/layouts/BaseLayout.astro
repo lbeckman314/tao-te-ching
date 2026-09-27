@@ -25,16 +25,16 @@ const { lang = "en", schema } = Astro.props;
     <main class="app-layout flex flex-col space-y-8 sm:space-y-10">
       
 
-      {/* Page/Post Header Section */}
+      {/* Page/Chapter Header Section */}
       <slot name="header" />
 
-      {/* Page/Post Meta Section */}
+      {/* Page/Chapter Meta Section */}
       <slot name="meta" />
 
-      {/* Page/Post Content */}
+      {/* Page/Chapter Content */}
       <slot />
 
-      {/* Post Navigation */}
+      {/* Chapter Navigation */}
       <slot name="navigation" />
 
       {/* Additional Content */}

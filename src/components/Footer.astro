@@ -7,8 +7,8 @@ export interface Props {
 }
 
 const {
-  meta = 'A personal publication &middot; Travels &middot; Technology<br>And everyday notes',
-  annotation,
+  meta = `Translation by ${siteConfig.translator}`,
+  annotation = siteConfig.annotation,
 } = Astro.props;
 ---
 
@@ -23,6 +23,11 @@ const {
         <span class="font-annotation block text-primary max-w-70 md:max-w-80 mx-auto mt-6 text-xl md:text-2xl text-center -rotate-1 leading-snug">
           {annotation}
         </span>
+      )}
+      {siteConfig.rightsNotice && (
+        <p class="font-ui text-muted-foreground text-xs text-center text-balance leading-relaxed max-w-md mx-auto mt-6">
+          {siteConfig.rightsNotice}
+        </p>
       )}
     </div>
   </div>

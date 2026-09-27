@@ -1,7 +1,8 @@
 {
-  "name": "red-rotation",
+  "name": "tao-te-ching",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.23.0",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -28,6 +29,7 @@
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
     "rehype-unwrap-images": "^1.0.0",
+    "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "satori": "^0.26.0",
     "satori-html": "^0.3.2",

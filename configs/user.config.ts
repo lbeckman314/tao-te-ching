@@ -1,60 +1,43 @@
 import type { UserConfig } from "../src/site.config";
 
 const userConfig: UserConfig = {
-  title: "Lipi",
+  title: "Tao Te Ching / 道德经",
   description:
-    "A minimal editorial theme for Astro built for blogs, journals, travel writing, and long-form publishing.",
+    "A Book about the Way and the Power of the Way.",
 
   url: "https://astro-lipi.pages.dev",
-  author: "John Doe",
+  author: "Lao Tzu",
+  translator: "Ursula K. Le Guin",
 
   logo: "/logo.svg",
   avatar: "/avatar.png",
 
   navigation: [
-    { title: "Writing", url: "/posts" },
-    { title: "Archive", url: "/archive" },
     { title: "About", url: "/about" },
   ],
 
   footerLinks: [
     { title: "RSS", url: "/rss.xml" },
-    { title: "Archive", url: "/archive" },
-    { title: "Source", url: "https://github.com/thelocalhoststudio/lipi" },
-    
   ],
 
-  social: [
-    {
-      title: "GitHub",
-      url: "https://github.com/thelocalhoststudio/lipi",
-      icon: "github",
-    },
-    {
-      title: "X",
-      url: "https://x.com/",
-      icon: "x",
-    },
-    {
-      title: "LinkedIn",
-      url: "https://linkedin.com/",
-      icon: "linkedin",
-    },
-    
-  ],
+  social: [],
 
   footerCredits: "Designed for reading. Built with Astro & Lipi",
 
-  postsPerPage: 8,
-  recentPosts: 6,
-  relatedPosts: 4,
+  // Shown in the footer. Confirm the wording with the Le Guin Estate.
+  rightsNotice:
+    "Tao Te Ching, translated by Ursula K. Le Guin (Shambhala, ISBN 978-1611807240). © The Ursula K. Le Guin Estate. Published by permission; not for commercial use.",
+
+  chaptersPerPage: 8,
+  recentChapters: 6,
+  relatedChapters: 4,
 
   showThemeToggle: true,
-  showReadingTime: true,
+  showReadingTime: false,
 
   heroVariant: "studio",
 
-  annotation: "Writing between filter coffees and terminal windows.",
+  annotation: "A Book about the Way and the Power of the Way.",
 };
 
 export default userConfig;

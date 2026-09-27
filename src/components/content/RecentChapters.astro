@@ -1,0 +1,43 @@
+---
+import { type Chapter } from "@/utils/content";
+import SectionHeader from "@/components/SectionHeader.astro";
+import ChapterTitle from "@/components/content/ChapterTitle.astro";
+import ChapterMeta from "./ChapterMeta.astro";
+
+type Props = {
+  chapters: Chapter[];
+  sectionTitle?: string;
+  sectionDesc?: string;
+};
+
+const {
+  chapters,
+  sectionTitle,
+  sectionDesc,
+} = Astro.props;
+
+---
+<section class="my-2 md:my-4 py-4">
+  <SectionHeader title={sectionTitle} subheading={sectionDesc} />
+  <div class="flex flex-col space-y-4 mt-4">
+    {chapters.map((chapter) => (
+      <div class="flex flex-col space-y-3 py-4 first:pt-0 border-b last:border-0 border-border/50 group hover:translate-x-2 transition-transform ease-fluid">
+        <ChapterTitle chapter={chapter}
+          class="text-base md:text-xl font-medium text-balance leading-snug link-hover"/>
+        {chapter.data.description && (
+          <p class="text-sm italic leading-normal text-muted-foreground md:max-w-xl">
+            {chapter.data.description}
+          </p>
+        )}
+        <div class="post-meta flex flex-row items-baseline gap-2 text-xs font-ui text-muted-foreground">
+          <ChapterMeta chapter={chapter} showReadingTime />
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <a href="/about" class="group inline-cta text-muted-foreground hover:text-foreground">
+    <span class="inline-cta-line group-hover:w-16"></span>
+    ...
+  </a>
+</section>

@@ -1,0 +1,59 @@
+---
+import { type Chapter } from "@/utils/content";
+import { calculateReadingTime } from "@/utils/text";
+import siteConfig from "@/site.config";
+
+type Props = {
+  chapter: Chapter;
+  showReadingTime?: boolean;
+  showLanguage?: boolean;
+  accentCategory?: boolean;
+};
+
+const {
+  chapter,
+  showReadingTime = false,
+  showLanguage = false,
+  accentCategory = false,
+} = Astro.props;
+
+const { category, published, updated, lang } = chapter.data;
+
+const displayDate = new Intl.DateTimeFormat("en", {
+  month: "short",
+  year: "numeric",
+}).format(updated ?? published);
+
+const readingTime =
+  siteConfig.showReadingTime && showReadingTime
+    ? calculateReadingTime(chapter.body ?? "").text
+    : null;
+---
+{
+  category && (
+    <span
+      class:list={[
+        "",
+        { "text-primary": accentCategory },
+      ]}
+    >
+      {category}
+    </span>
+  )
+}
+
+{
+  readingTime && (
+    <span>
+      {readingTime}
+    </span>
+  )
+}
+
+{
+  showLanguage && lang && (
+    <span class="uppercase">
+      {lang}
+    </span>
+  )
+}

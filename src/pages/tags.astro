@@ -16,7 +16,7 @@ export function getTagTransitionName(
 
 <PageLayout
   title="Tags"
-  description="Browse posts by tag."
+  description="Browse chapters by tag."
 >
   {
     tagArchives.length > 0 ? (
@@ -35,7 +35,7 @@ export function getTagTransitionName(
               </span>
 
               <span class="text-muted-foreground shrink-0 text-sm font-code uppercase tabular-nums">
-                {archive.count} {archive.count === 1 ? "post" : "posts"}
+                {archive.count} {archive.count === 1 ? "chapter" : "chapters"}
               </span>
             </a>
           </li>

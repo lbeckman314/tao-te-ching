@@ -2,7 +2,7 @@ import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
-export const POSTS_PATH = "src/content/posts/";
+export const CHAPTERS_PATH = "src/content/chapters/";
 export const PAGES_PATH = "src/content/pages/";
 
 function removeDupsAndLowerCase(array: string[]) {
@@ -12,14 +12,14 @@ function removeDupsAndLowerCase(array: string[]) {
 	return Array.from(distinctItems);
 }
 
-const postsCollection = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: `./${POSTS_PATH}` }),
+const chaptersCollection = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: `./${CHAPTERS_PATH}` }),
   schema: z.object({
     title: z.string(),
-    description: z.string(),
-    published: z.coerce.date(),
+    description: z.string().optional(),
+    published: z.coerce.date().optional(),
     updated: z.coerce.date().optional(),
-    category: z.string().optional().default("Travels"),
+    category: z.string().optional(),
     tags: z.array(z.string()).transform(removeDupsAndLowerCase).optional(),
     cover: z.string().optional(),
     draft: z.boolean().default(false),
@@ -33,7 +33,7 @@ const pagesCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string().optional(),
-    updated: z.coerce.date(),
+    updated: z.coerce.date().optional(),
     draft: z.boolean().default(false),
     lang: z.string().optional(),
     annotation: z.string().optional(),
@@ -41,6 +41,6 @@ const pagesCollection = defineCollection({
 });
 
 export const collections = {
-  posts: postsCollection,
+  chapters: chaptersCollection,
   pages: pagesCollection,
 };

@@ -1,0 +1,31 @@
+---
+import { getChapterUrl, type Chapter } from "@/utils/content";
+import { slugify } from "@/utils/text";
+
+type Props = {
+  tag?: 'h1' | 'h2';
+  chapter: Chapter;
+  class?: string;
+};
+
+const {
+  tag: Heading = "h2",
+  chapter,
+  class: className = "",
+} = Astro.props;
+
+const url = getChapterUrl(chapter.id, chapter.filePath);
+const titleSlug = slugify(chapter.data.title.replaceAll(".", "-"));
+const titleClass = [ "text-balance", className,]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<a
+  href={url}
+  class="no-underline hover:text-primary"
+>
+  <Heading class={titleClass} transition:name={titleSlug}>
+    {chapter.data.title}
+  </Heading>
+</a>

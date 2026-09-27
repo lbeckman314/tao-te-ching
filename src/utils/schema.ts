@@ -1,5 +1,5 @@
 import siteConfig from "@/site.config";
-import { type Post, type Page, getPostUrl } from "./content";
+import { type Chapter, type Page, getChapterUrl } from "./content";
 
 export function generateWebsiteSchema() {
   return {
@@ -11,22 +11,22 @@ export function generateWebsiteSchema() {
   };
 }
 
-export function generatePostSchema(
-  post: Post
+export function generateChapterSchema(
+  chapter: Chapter
 ) {
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: post.data.title,
-    description: post.data.description,
-    datePublished: post.data.published,
+    headline: chapter.data.title,
+    description: chapter.data.description,
+    datePublished: chapter.data.published,
     dateModified:
-      post.data.updated ??
-      post.data.published,
+      chapter.data.updated ??
+      chapter.data.published,
 
-    url: getPostUrl(
-      post.id,
-      post.filePath
+    url: getChapterUrl(
+      chapter.id,
+      chapter.filePath
     ),
 
     author: {
