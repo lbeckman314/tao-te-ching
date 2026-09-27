@@ -23,4 +23,4 @@ whose identity is mystery.
 Mystery of all mysteries!
 The door to the hidden.
 
-> A satisfactory translation of this chapter is, I believe, perfectly impossible. It contains the book. I think of it as the Aleph, in Borges's story: if you see it rightly, it contains everything.
+> A satisfactory translation of this chapter is, I believe, perfectly impossibly. It contains the book. I think of it as the Aleph, in Borge's story: if you see it rightly, it contains everything.

@@ -1,16 +1,30 @@
 ---
-title: 9. Being Quiet
+title: 10. Techniques
 ---
 
-Brim-fill the bowl,
-it'll spill over.
-Keep sharpening the blade,
-you'll soon blunt it.
+Can you keep your soul in its body,
+hold fast to the one,
+and so learn to be whole?
+Can you center your energy,
+be soft, tender,
+and so learn to be a baby?
 
-Nobody can protect
-a house full of gold and jade.
+Can you keep the deep water still and clear,
+so it reflects without blurring?
+Can you love people and run things,
+and do so by not doing?
 
-Wealth, status, pride,
-are their own ruin.
-To do good, work well, and lie low
-is the way of the blessing.
+Opening, closing the Gate of Heaven,
+can you be like a bird with her nestlings?
+Piercing bright through the cosmos,
+can you know by not knowing?
+
+To give birth, to nourish,
+to bear and not to own,
+to act and not lay claim,
+to lead and not to rule:
+this is a mysterious power.
+
+> Most of the scholars think this chapter is about meditation, its techniques and fulfillments. The language is profoundly mystical, the images are chared, rich in implications.
+>
+> The last verse turns up in nearly the same words in other chapters; there are several such "refrains" throughout the book, identical or similar lines repeated once or twice or three tunes.

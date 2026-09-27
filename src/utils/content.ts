@@ -42,7 +42,8 @@ function isVisibleChapter(chapter: Chapter): boolean {
 }
 
 export async function getAllChapters(): Promise<Chapter[]> {
-  if (chaptersCache) {
+  // Only cache in builds; in dev, content can change between requests
+  if (chaptersCache && !import.meta.env.DEV) {
     return chaptersCache;
   }
 
@@ -66,7 +67,7 @@ export async function getAllChapters(): Promise<Chapter[]> {
 }
 
 export async function getAllPages(): Promise<Page[]> {
-  if (pagesCache) {
+  if (pagesCache && !import.meta.env.DEV) {
     return pagesCache;
   }
 
