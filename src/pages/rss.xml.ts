@@ -1,14 +1,13 @@
 import rss from "@astrojs/rss";
-import type { APIContext } from "astro";
 import siteConfig from "@/site.config";
 import {
   getAllChapters,
   getChapterUrl,
 } from "@/utils/content";
 
-export async function GET(context: APIContext) {
+export async function GET() {
   const chapters = await getAllChapters();
-  const site = context.site ?? siteConfig.url;
+  const site = siteConfig.url;
 
   return rss({
     title: siteConfig.title,

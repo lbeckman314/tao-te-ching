@@ -3,6 +3,7 @@ import { type Chapter } from "@/utils/content";
 import SectionHeader from "@/components/SectionHeader.astro";
 import ChapterTitle from "@/components/content/ChapterTitle.astro";
 import ChapterMeta from "./ChapterMeta.astro";
+import { getAssetPath } from "@/utils/url";
 
 type Props = {
   chapters: Chapter[];
@@ -36,7 +37,7 @@ const {
     ))}
   </div>
 
-  <a href="/about" class="group inline-cta text-muted-foreground hover:text-foreground">
+  <a href={getAssetPath("about")} class="group inline-cta text-muted-foreground hover:text-foreground">
     <span class="inline-cta-line group-hover:w-16"></span>
     ...
   </a>

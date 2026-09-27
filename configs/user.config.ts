@@ -5,7 +5,7 @@ const userConfig: UserConfig = {
   description:
     "A Book about the Way and the Power of the Way.",
 
-  url: "https://astro-lipi.pages.dev",
+  url: "https://lbeckman314.github.io/tao-te-ching",
   author: "Lao Tzu",
   translator: "Ursula K. Le Guin",
 
@@ -21,6 +21,11 @@ const userConfig: UserConfig = {
   ],
 
   social: [],
+
+  repository: {
+    url: "https://github.com/lbeckman314/tao-te-ching",
+    branch: "main",
+  },
 
   footerCredits: "Designed for reading. Built with Astro & Lipi",
 

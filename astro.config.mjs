@@ -18,7 +18,10 @@ import { remarkObsidian } from './src/plugins/remark-obsidian.ts';
 
 // https://astro.build/config
 export default defineConfig({
-  site: siteConfig.url,
+  // `url` may include a path (e.g. GitHub Pages project sites); split it
+  // into the origin and the base path the site is served under.
+  site: new URL(siteConfig.url).origin,
+  base: new URL(siteConfig.url).pathname,
 
   image: {
     responsiveStyles: true,

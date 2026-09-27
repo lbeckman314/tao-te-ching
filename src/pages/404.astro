@@ -1,5 +1,6 @@
 ---
 import PageLayout from "@/layouts/PageLayout.astro";
+import { getAssetPath } from "@/utils/url";
 ---
 
 <PageLayout
@@ -17,14 +18,14 @@ import PageLayout from "@/layouts/PageLayout.astro";
       class="flex flex-wrap gap-x-5 gap-y-2 font-ui text-sm"
     >
       <a
-        href="/"
+        href={getAssetPath("/")}
         class="nav-link"
       >
         Home
       </a>
 
       <a
-        href="/chapters"
+        href={getAssetPath("chapters")}
         class="nav-link"
       >
         Chapters

@@ -5,18 +5,20 @@ import { getAssetPath } from "@/utils/url";
 const pathname = Astro.url.pathname;
 
 function isActive(url: string) {
-  if (url === "/") {
-    return pathname === "/";
+  const href = getAssetPath(url);
+
+  if (href === getAssetPath("/")) {
+    return pathname === href;
   }
 
-  return pathname.startsWith(url);
+  return pathname.startsWith(href);
 }
 ---
 
 <header class="site-header sticky overflow-visible top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
   <div class="app-layout flex min-h-16 items-center justify-between py-3">
     <!-- Logo / Title -->
-    <a href="/" class="flex items-center gap-3">
+    <a href={getAssetPath("/")} class="flex items-center gap-3">
       {
         siteConfig.showLogo && siteConfig.logo ? (
           <img
@@ -38,7 +40,7 @@ function isActive(url: string) {
         {
           siteConfig.navigation.map((item) => (
             <a
-              href={item.url}
+              href={getAssetPath(item.url)}
               class="nav-link link-hover tracking-wide"
               aria-current={isActive(item.url) ? "page" : undefined}
             >
@@ -94,7 +96,7 @@ function isActive(url: string) {
       {
         siteConfig.navigation.map((item) => (
           <a
-            href={item.url}
+            href={getAssetPath(item.url)}
             class="flex items-center justify-between px-4 py-3.5 border-b border-border 
               font-ui text-base text-muted-foreground link-hover aria-[current=page]:text-primary
               last:border-b-0"

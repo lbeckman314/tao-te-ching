@@ -1,3 +1,5 @@
+import siteConfig from "@/site.config";
+
 const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
 const baseRoot = base === "" ? "/" : `${base}/`;
 
@@ -18,4 +20,10 @@ export function absoluteUrl(
   site?: string | URL
 ): string {
   return new URL(getAssetPath(path), site).toString();
+}
+export function getEditUrl(filePath?: string): string | undefined {
+  const { repository } = siteConfig;
+  if (!repository || !filePath) return undefined;
+
+  return `${repository.url.replace(/\/+$/, "")}/blob/${repository.branch}/${filePath}`;
 }

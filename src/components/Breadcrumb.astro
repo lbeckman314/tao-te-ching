@@ -1,7 +1,11 @@
 ---
 import HomeIcon from "@/assets/home.svg"
+import { getAssetPath } from "@/utils/url";
 
-const pathname = Astro.url.pathname;
+// Path within the site, without the base (e.g. "/tao-te-ching")
+const pathname = Astro.url.pathname.slice(
+  import.meta.env.BASE_URL.replace(/\/+$/, "").length
+);
 
 const segments = pathname
   .split("/")
@@ -9,11 +13,11 @@ const segments = pathname
 
 const breadcrumbs = segments.map(
   (segment, index) => {
-    const href =
-      "/" +
+    const href = getAssetPath(
       segments
         .slice(0, index + 1)
-        .join("/");
+        .join("/")
+    );
 
     const label = decodeURIComponent(
       segment
@@ -38,7 +42,7 @@ const breadcrumbs = segments.map(
       class="text-muted-foreground flex flex-wrap items-center gap-2 text-xs font-ui my-8"
     >
       <a
-        href="/"
+        href={getAssetPath("/")}
         class="flex gap-1 items-center hover:text-foreground transition-colors"
       >
         <HomeIcon class="text-muted-forground size-4"/>

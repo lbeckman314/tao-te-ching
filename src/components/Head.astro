@@ -3,6 +3,7 @@ import { Font } from 'astro:assets';
 import { ClientRouter } from "astro:transitions";
 import "@/styles/global.css";
 import "@/styles/pagefind.css";
+import { getAssetPath } from "@/utils/url";
 
 interface Props {
   lang?: string;
@@ -19,9 +20,9 @@ const { lang = "en", schema } = Astro.props;
   <!-- Filled at runtime by theme.ts to match the current background colour -->
   <meta name="theme-color" content="" />
 
-  <link rel="icon" href="/favicon.ico" type="image/svg+xml" />
-  <link rel="sitemap" href="/sitemap-index.xml" />
-  <link rel="alternate" type="application/rss+xml" title="RSS Feed" href="/rss.xml" />
+  <link rel="icon" href={getAssetPath("favicon.ico")} type="image/svg+xml" />
+  <link rel="sitemap" href={getAssetPath("sitemap-index.xml")} />
+  <link rel="alternate" type="application/rss+xml" title="RSS Feed" href={getAssetPath("rss.xml")} />
 
 	  <!-- SEO injected per layout -->
   <slot name="seo" />
@@ -62,12 +63,12 @@ const { lang = "en", schema } = Astro.props;
   </script>
   
   <link
-    href="/pagefind/pagefind-component-ui.css"
+    href={getAssetPath("pagefind/pagefind-component-ui.css")}
     rel="stylesheet"
   />
   
   <script
-    src="/pagefind/pagefind-component-ui.js"
+    src={getAssetPath("pagefind/pagefind-component-ui.js")}
     type="module"
   ></script>
 

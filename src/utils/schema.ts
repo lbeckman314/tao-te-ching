@@ -1,5 +1,6 @@
 import siteConfig from "@/site.config";
 import { type Chapter, type Page, getChapterUrl } from "./content";
+import { absoluteUrl } from "./url";
 
 export function generateWebsiteSchema() {
   return {
@@ -24,10 +25,10 @@ export function generateChapterSchema(
       chapter.data.updated ??
       chapter.data.published,
 
-    url: getChapterUrl(
-      chapter.id,
-      chapter.filePath
-    ),
+    url: new URL(
+      getChapterUrl(chapter.id, chapter.filePath),
+      siteConfig.url
+    ).toString(),
 
     author: {
       "@type": "Person",
@@ -44,10 +45,7 @@ export function generateAboutSchema(
     "@type": "AboutPage",
     name: page.data.title,
     description: page.data.description,
-    url: new URL(
-      "/about",
-      siteConfig.url
-    ).toString(),
+    url: absoluteUrl("about", siteConfig.url),
     isPartOf: {
       "@type": "WebSite",
       name: siteConfig.title,

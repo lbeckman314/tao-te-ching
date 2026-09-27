@@ -1,5 +1,6 @@
 ---
 import siteConfig from "@/site.config";
+import { getAssetPath } from "@/utils/url";
 
 interface Props {
   title: string;
@@ -31,7 +32,7 @@ const resolvedOgImage = ogImage
   ? new URL(ogImage, siteConfig.url).href
   : image
   ? new URL(image, siteConfig.url).href
-  : new URL('/og.png', siteConfig.url).href;
+  : new URL(getAssetPath("og.png"), siteConfig.url).href;
 ---
 
 <!-- Core -->
