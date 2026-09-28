@@ -33,7 +33,6 @@ const userConfig: UserConfig = {
   rightsNotice:
     "Tao Te Ching, translated by Ursula K. Le Guin (Shambhala, ISBN 978-1611807240). © The Ursula K. Le Guin Estate. Published by permission; not for commercial use.",
 
-  chaptersPerPage: 8,
   recentChapters: 6,
   relatedChapters: 4,
 

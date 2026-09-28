@@ -35,7 +35,6 @@ export interface UserConfig {
     branch: string;
   };
 
-  chaptersPerPage?: number;
   recentChapters?: number;
   relatedChapters?: number;
 
@@ -68,7 +67,6 @@ const siteConfig = {
   rightsNotice: userConfig.rightsNotice,
   repository: userConfig.repository,
 
-  chaptersPerPage: userConfig.chaptersPerPage ?? 8,
   recentChapters: userConfig.recentChapters ?? 6,
   relatedChapters: userConfig.relatedChapters ?? 4,
 

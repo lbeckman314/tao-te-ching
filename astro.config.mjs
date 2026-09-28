@@ -16,12 +16,21 @@ import { remarkExternalLinks } from './src/plugins/remark-external-links.ts';
 import { remarkObsidian } from './src/plugins/remark-obsidian.ts';
 
 
+// `url` may include a path (e.g. GitHub Pages project sites); split it
+// into the origin and the base path the site is served under.
+const { origin, pathname: base } = new URL(siteConfig.url);
+const basePath = base.replace(/\/+$/, "");
+
 // https://astro.build/config
 export default defineConfig({
-  // `url` may include a path (e.g. GitHub Pages project sites); split it
-  // into the origin and the base path the site is served under.
-  site: new URL(siteConfig.url).origin,
-  base: new URL(siteConfig.url).pathname,
+  site: origin,
+  base,
+
+  // Chapters used to be paginated; send old page links to the full list
+  redirects: {
+    // Redirect targets don't get the base path added automatically
+    "/chapters/2": `${basePath}/chapters`,
+  },
 
   image: {
     responsiveStyles: true,
