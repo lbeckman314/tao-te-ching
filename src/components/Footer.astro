@@ -15,7 +15,7 @@ const {
 const commit = process.env.GITHUB_SHA;
 const repoUrl = siteConfig.repository?.url.replace(/\/+$/, "");
 const commitUrl = repoUrl && (commit ? `${repoUrl}/commit/${commit}` : `${repoUrl}/commits/`);
-const commitLabel = commit ? commit.slice(0, 7) : "dev";
+const commitLabel = commit ? `Built from commit ${commit.slice(0, 7)}` : "Local build";
 ---
 
 <footer class="border-border mt-12 border-t py-8 ">
