@@ -4,7 +4,7 @@ title: 11. The Uses of Not
 
 Thirty spokes
 meet in the hub.
-Where teh wheel isn't
+Where the wheel isn't
 is where it's useful.
 
 Hallowed out,
