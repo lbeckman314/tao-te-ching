@@ -31,7 +31,7 @@ const userConfig: UserConfig = {
 
   // Shown in the footer. Confirm the wording with the Le Guin Estate.
   rightsNotice:
-    "Tao Te Ching, translated by Ursula K. Le Guin (Shambhala, ISBN 978-1611807240). © The Ursula K. Le Guin Estate. Published by permission; not for commercial use.",
+    "Tao Te Ching, translated by Ursula K. Le Guin (Shambhala, ISBN 978-1611807240). © The Ursula K. Le Guin Estate. Not for commercial use.",
 
   recentChapters: 6,
   relatedChapters: 4,
