@@ -1,7 +1,7 @@
 import type { UserConfig } from "../src/site.config";
 
 const userConfig: UserConfig = {
-  title: "Tao Te Ching / 道德经",
+  title: "Tao Te Ching · 道德经",
   description:
     "A Book about the Way and the Power of the Way.",
 
