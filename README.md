@@ -6,6 +6,6 @@ See Also Nicholas Bennett's excellent [GitBook version](https://nrrb.github.io/t
 
 ---
 
-The site itself is built with Astro using the [Lipi](https://github.com/thelocalhoststudio/lipi) theme which is inturn inspired by the [Kami](https://kami.tw93.fun) design language.
+The site itself is built with Astro using the [Lipi](https://github.com/thelocalhoststudio/lipi) theme which is in turn inspired by the [Kami](https://kami.tw93.fun) design language.
 
 All content copyrighted and owned by The Ursula K. Le Guin Estate.

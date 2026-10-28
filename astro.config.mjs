@@ -173,4 +173,11 @@ export default defineConfig({
       ],
     }),
   },
+
+  // Listen on all interfaces so other devices (e.g. a phone over Tailscale)
+  // can reach the dev server, including via MagicDNS *.ts.net names.
+  server: {
+    host: true,
+    allowedHosts: [".ts.net"],
+  },
 });
