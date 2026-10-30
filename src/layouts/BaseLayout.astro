@@ -4,6 +4,7 @@ import Header from '@/components/Header.astro';
 import Footer from "@/components/Footer.astro";
 import ScrollToTop from "@/components/ScrollToTop.astro";
 import HeadingAnchors from '@/scripts/HeadingAnchors.astro';
+import AsciiBackground from '@/components/AsciiBackground.astro';
 
 interface Props {
   lang?: string;
@@ -19,6 +20,7 @@ const { lang = "en", schema } = Astro.props;
     <slot name="head" slot="head" />
   </Head>
   <body class="font-content bg-background text-foreground selection:bg-selection">
+    <AsciiBackground />
 
     <Header />
     <!-- Main content -->

@@ -1,0 +1,108 @@
+<!--
+  Decorative ASCII ground (Asciify "Swell") in the side margins of every page.
+  transition:persist carries the same canvas across client-side navigations,
+  so the field keeps running instead of restarting on each page.
+-->
+<div id="ascii-background" class="ascii-background" aria-hidden="true" transition:persist="ascii-background"></div>
+
+<style>
+  /*
+   * A fixed layer behind the whole page, so the side margins carry the field top to
+   * bottom at every scroll position. The mask cuts out the 42rem content column
+   * (max-w-app); the field fades in over 4rem from the column edge.
+   */
+  .ascii-background {
+    --column: 21rem;
+    --fade: 4rem;
+
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--background);
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(50% - var(--column) - var(--fade)), transparent calc(50% - var(--column)), transparent calc(50% + var(--column)), #000 calc(50% + var(--column) + var(--fade)));
+    mask-image: linear-gradient(to right, #000 calc(50% - var(--column) - var(--fade)), transparent calc(50% - var(--column)), transparent calc(50% + var(--column)), #000 calc(50% + var(--column) + var(--fade)));
+  }
+
+  /* No real margins on narrow screens (the script skips the renderer there too) */
+  @media (max-width: 52rem) {
+    .ascii-background {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import type { BackgroundHandle } from "asciify-engine/kit";
+
+  // Matches the CSS breakpoint that hides the layer when there are no side margins
+  const wide = window.matchMedia("(min-width: 52.01rem)");
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  let bg: BackgroundHandle | null = null;
+  let pointer: AbortController | null = null;
+  let mounting = 0;
+
+  /*
+   * The kit reads the pointer from the host element only, and the host sits behind
+   * the page with pointer-events: none. Feed it page-wide moves instead: the host
+   * is fixed at the viewport origin, so client coordinates are canvas coordinates.
+   */
+  function followPointer(handle: BackgroundHandle) {
+    pointer = new AbortController();
+    const { signal } = pointer;
+
+    document.addEventListener(
+      "pointermove",
+      (event) => {
+        if (event.pointerType === "touch" || reducedMotion.matches) return;
+        handle.field?.pointer(event.clientX, event.clientY);
+      },
+      { passive: true, signal },
+    );
+    // Lift the light when the cursor leaves the window
+    document.documentElement.addEventListener("pointerleave", () => handle.field?.pointer(null), { signal });
+  }
+
+  async function mountBackground() {
+    const host = document.getElementById("ascii-background");
+    // Already running: the persisted host (and its canvas) moved to the new page
+    if (!host || bg || !wide.matches) return;
+
+    const run = ++mounting;
+    try {
+      const { background, swell } = await import("asciify-engine/kit");
+      // Released (or remounted) while the module was loading
+      if (run !== mounting || !host.isConnected) return;
+
+      // Swell at its site defaults: dots, 10px cells, speed 1, 0.6 opacity,
+      // lantern hover, graphite ink that follows light and dark. The CSS mask
+      // keeps it out of the text column, so nothing needs clearing.
+      bg = background(host, { 
+        preset: swell,
+        clear: false,
+        opacity: 0.4,
+      });
+      followPointer(bg);
+    } catch (error) {
+      // The page is plain HTML without the artwork, so a failed load changes nothing else
+      console.warn("ASCII background unavailable:", error);
+    }
+  }
+
+  function destroyBackground() {
+    mounting++;
+    pointer?.abort();
+    pointer = null;
+    bg?.destroy();
+    bg = null;
+  }
+
+  document.addEventListener("astro:page-load", mountBackground);
+  // Mount or release when the window crosses the breakpoint (both return early otherwise)
+  window.addEventListener("resize", () => {
+    if (wide.matches) mountBackground();
+    else if (bg) destroyBackground();
+  });
+</script>
