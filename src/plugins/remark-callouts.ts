@@ -1,12 +1,13 @@
 import { visit } from 'unist-util-visit';
 import type { Plugin } from 'unified';
-import type { Root, Blockquote, Paragraph, Text } from 'mdast';
+import type { Root, Blockquote, Paragraph, Text, PhrasingContent, BlockContent } from 'mdast';
 
 /**
  * Remark Callouts Plugin
  *
  * Converts Obsidian callout syntax into styled HTML blocks.
- * Supports collapsible callouts via [!type]+ and [!type]-
+ * Supports collapsible callouts via [!type]+ (open) and [!type]- (closed),
+ * rendered as <details>/<summary> so no client-side script is needed.
  *
  * Supported types: note, tip, important, warning, caution,
  * danger, info, question, success, failure, bug, example,
@@ -74,7 +75,7 @@ const calloutMappings: Record<string, CalloutMapping> = {
 
 const remarkCallouts: Plugin<[], Root> = () => {
   return (tree) => {
-    visit(tree, 'blockquote', (node: Blockquote, index, parent) => {
+    visit(tree, 'blockquote', (node: Blockquote) => {
       const firstChild = node.children[0];
       if (!firstChild || firstChild.type !== 'paragraph') return;
 
@@ -82,7 +83,7 @@ const remarkCallouts: Plugin<[], Root> = () => {
       if (!firstText || firstText.type !== 'text') return;
 
       const text = (firstText as Text).value;
-      const calloutMatch = text.match(/^\[!([\w-]+)\]([+\-]?)(?:\s+(.+))?/);
+      const calloutMatch = text.match(/^\[!([\w-]+)\]([+\-]?)[ \t]*(.*)/);
       if (!calloutMatch) return;
 
       const [fullMatch, calloutType, collapseState, customTitle] = calloutMatch;
@@ -96,80 +97,66 @@ const remarkCallouts: Plugin<[], Root> = () => {
 
       const isCollapsible = collapseState === '+' || collapseState === '-';
       const isCollapsed = collapseState === '-';
-      const calloutTitle = customTitle || mapping.title;
-      const remainingText = text.slice(fullMatch.length).trim();
+      const calloutTitle = customTitle.trim() || mapping.title;
 
-      // Content children — remove the first paragraph if it only had the syntax
-      let contentChildren = [...node.children];
+      // Strip the `[!type] Title` line; drop the first paragraph if it's now empty
+      const remainingText = text.slice(fullMatch.length).replace(/^\s+/, '');
+      const firstParagraph = firstChild as Paragraph;
       if (remainingText) {
         (firstText as Text).value = remainingText;
       } else {
-        contentChildren = contentChildren.slice(1);
+        firstParagraph.children.shift();
+      }
+      const contentChildren = (
+        firstParagraph.children.length ? node.children : node.children.slice(1)
+      ) as BlockContent[];
+
+      const titleChildren: PhrasingContent[] = [
+        { type: 'html', value: getIconSVG(mapping.icon) },
+        {
+          type: 'emphasis',
+          data: { hName: 'span', hProperties: { className: ['callout__label'] } },
+          children: [{ type: 'text', value: calloutTitle }],
+        },
+      ];
+      if (isCollapsible) {
+        titleChildren.push({
+          type: 'html',
+          value:
+            '<svg class="callout__toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6,9 12,15 18,9"></polyline></svg>',
+        });
       }
 
-      // Build wrapper class
-      const wrapperClass = [
-        'callout',
-        `callout-${mapping.type}`,
-        isCollapsible ? 'callout--collapsible' : '',
-        isCollapsed ? 'callout--collapsed' : '',
-      ]
-        .filter(Boolean)
-        .join(' ');
-
-      const toggleButton = isCollapsible
-        ? `<button class="callout__toggle" aria-expanded="${!isCollapsed}" aria-label="Toggle callout">
-            <svg class="callout__toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6,9 12,15 18,9"></polyline>
-            </svg>
-          </button>`
-        : '';
-
-      const openHtml: any = {
-        type: 'html',
-        value: `<div class="${wrapperClass}">
-  <div class="callout__title">
-    ${getIconSVG(mapping.icon)}
-    <span class="callout__label">${calloutTitle}</span>
-    ${toggleButton}
-  </div>
-  <div class="callout__content"${isCollapsed ? ' hidden' : ''}>`,
+      // Rewrite the blockquote in place as the callout wrapper
+      const callout = node as any;
+      callout.type = 'callout';
+      callout.data = {
+        hName: isCollapsible ? 'details' : 'div',
+        hProperties: {
+          className: [
+            'callout',
+            `callout-${mapping.type}`,
+            ...(isCollapsible ? ['callout--collapsible'] : []),
+          ],
+          dataCallout: calloutType.toLowerCase(),
+          ...(isCollapsible && !isCollapsed ? { open: true } : {}),
+        },
       };
-
-      const closeHtml: any = {
-        type: 'html',
-        value: `</div>
-<script>
-(function(){
-  var btn = document.currentScript.previousElementSibling
-    ?.closest('.callout--collapsible')
-    ?.querySelector('.callout__toggle');
-  if (!btn) return;
-  btn.addEventListener('click', function() {
-    var content = this.closest('.callout').querySelector('.callout__content');
-    var expanded = this.getAttribute('aria-expanded') === 'true';
-    this.setAttribute('aria-expanded', String(!expanded));
-    this.closest('.callout').classList.toggle('callout--collapsed', expanded);
-    if (expanded) {
-      content.setAttribute('hidden', '');
-    } else {
-      content.removeAttribute('hidden');
-    }
-  });
-})();
-</script>
-</div>`,
-      };
-
-      if (parent && typeof index === 'number') {
-        parent.children.splice(
-          index,
-          1,
-          openHtml,
-          ...contentChildren,
-          closeHtml
-        );
-      }
+      callout.children = [
+        {
+          type: 'paragraph',
+          data: {
+            hName: isCollapsible ? 'summary' : 'div',
+            hProperties: { className: ['callout__title'] },
+          },
+          children: titleChildren,
+        },
+        {
+          type: 'callout-content',
+          data: { hName: 'div', hProperties: { className: ['callout__content'] } },
+          children: contentChildren,
+        },
+      ];
     });
   };
 };

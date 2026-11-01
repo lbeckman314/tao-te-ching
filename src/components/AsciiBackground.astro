@@ -1,9 +1,20 @@
+---
+// The background switch is a development aid for comparing renderers side by side
+const showSwitch = import.meta.env.DEV;
+---
 <!--
-  Decorative ASCII ground (Asciify "Swell") in the side margins of every page.
-  transition:persist carries the same canvas across client-side navigations,
-  so the field keeps running instead of restarting on each page.
+  Decorative ground in the side margins of every page: a dot-character water ripple
+  by default, or Asciify's "Swell" with ?bg=swell. transition:persist carries the same
+  canvas across client-side navigations, so the field keeps running between pages.
 -->
 <div id="ascii-background" class="ascii-background" aria-hidden="true" transition:persist="ascii-background"></div>
+
+{showSwitch && (
+  <div class="ascii-background-switch" role="group" aria-label="Margin background (dev only)" transition:persist="ascii-background-switch">
+    <button type="button" data-ascii-bg="dots" aria-pressed="false">Dots</button>
+    <button type="button" data-ascii-bg="swell" aria-pressed="false">Swell</button>
+  </div>
+)}
 
 <style>
   /*
@@ -14,6 +25,7 @@
   .ascii-background {
     --column: 21rem;
     --fade: 4rem;
+    --dot-ink: var(--base-500);
 
     position: fixed;
     inset: 0;
@@ -24,95 +36,188 @@
     mask-image: linear-gradient(to right, #000 calc(50% - var(--column) - var(--fade)), transparent calc(50% - var(--column)), transparent calc(50% + var(--column)), #000 calc(50% + var(--column) + var(--fade)));
   }
 
+  :global([data-theme="dark"]) .ascii-background {
+    --dot-ink: var(--base-600);
+  }
+
+  .ascii-background-switch {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 50;
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    background: var(--background);
+    font: 0.75rem var(--font-lipi-mono, ui-monospace), ui-monospace, monospace;
+  }
+
+  .ascii-background-switch button {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    color: var(--muted-foreground);
+    cursor: pointer;
+  }
+
+  .ascii-background-switch button[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--foreground);
+  }
+
   /* No real margins on narrow screens (the script skips the renderer there too) */
   @media (max-width: 52rem) {
-    .ascii-background {
+    .ascii-background,
+    .ascii-background-switch {
       display: none;
     }
   }
 </style>
 
 <script>
-  import type { BackgroundHandle } from "asciify-engine/kit";
+  import { mountDotRipple } from "@/scripts/dot-ripple";
+
+  type Mode = "dots" | "swell";
+
+  /** What the page-wide pointer listeners talk to, whichever renderer is mounted. */
+  interface Renderer {
+    move(x: number, y: number): void;
+    leave(): void;
+    press(x: number, y: number): void;
+    destroy(): void;
+  }
+
+  const MODES: Mode[] = ["dots", "swell"];
+  const STORAGE_KEY = "ascii-background";
 
   // Matches the CSS breakpoint that hides the layer when there are no side margins
   const wide = window.matchMedia("(min-width: 52.01rem)");
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  let bg: BackgroundHandle | null = null;
-  let pointer: AbortController | null = null;
+  let renderer: Renderer | null = null;
   let mounting = 0;
 
+  const isMode = (value: unknown): value is Mode => MODES.includes(value as Mode);
+
   /*
-   * The kit reads the pointer from the host element only, and the host sits behind
-   * the page with pointer-events: none. Feed it page-wide moves instead: the host
-   * is fixed at the viewport origin, so client coordinates are canvas coordinates.
+   * ?bg=swell or ?bg=dots picks the renderer for this tab. sessionStorage is per tab,
+   * so two tabs can compare the renderers while navigating (the query is lost on
+   * client-side navigation, the stored choice is not).
    */
-  function followPointer(handle: BackgroundHandle) {
-    pointer = new AbortController();
-    const { signal } = pointer;
+  function currentMode(): Mode {
+    const requested = new URLSearchParams(location.search).get("bg");
+    try {
+      if (isMode(requested)) sessionStorage.setItem(STORAGE_KEY, requested);
+      const stored = sessionStorage.getItem(STORAGE_KEY);
+      if (isMode(stored)) return stored;
+    } catch {
+      // Storage blocked: fall back to the query alone
+    }
+    return isMode(requested) ? requested : "dots";
+  }
 
-    document.addEventListener(
-      "pointermove",
-      (event) => {
-        if (event.pointerType === "touch" || reducedMotion.matches) return;
-        handle.field?.pointer(event.clientX, event.clientY);
-      },
-      { passive: true, signal },
-    );
-    // Lift the light when the cursor leaves the window
-    document.documentElement.addEventListener("pointerleave", () => handle.field?.pointer(null), { signal });
+  async function createRenderer(mode: Mode, host: HTMLElement): Promise<Renderer> {
+    if (mode === "dots") {
+      const ripple = mountDotRipple(host);
+      return { ...ripple, leave() {} };
+    }
 
-    // A ripple from every primary press, anywhere on the page (pulse() skips itself under reduced motion)
-    document.addEventListener(
-      "pointerdown",
-      (event) => {
-        if (event.button !== 0) return;
-        handle.field?.pulse({ x: event.clientX, y: event.clientY });
-      },
-      { passive: true, signal },
-    );
+    const { background, swell } = await import("asciify-engine/kit");
+    // Swell at its site defaults: dots, 10px cells, speed 1, lantern hover, graphite
+    // ink that follows light and dark. The CSS mask keeps it out of the text column.
+    const bg = background(host, { preset: swell, clear: false, opacity: 0.4 });
+    return {
+      move: (x, y) => bg.field?.pointer(x, y),
+      leave: () => bg.field?.pointer(null),
+      press: (x, y) => bg.field?.pulse({ x, y }),
+      destroy: () => bg.destroy(),
+    };
   }
 
   async function mountBackground() {
     const host = document.getElementById("ascii-background");
     // Already running: the persisted host (and its canvas) moved to the new page
-    if (!host || bg || !wide.matches) return;
+    if (!host || renderer || !wide.matches) return;
 
     const run = ++mounting;
     try {
-      const { background, swell } = await import("asciify-engine/kit");
-      // Released (or remounted) while the module was loading
-      if (run !== mounting || !host.isConnected) return;
-
-      // Swell at its site defaults: dots, 10px cells, speed 1, 0.6 opacity,
-      // lantern hover, graphite ink that follows light and dark. The CSS mask
-      // keeps it out of the text column, so nothing needs clearing.
-      bg = background(host, { 
-        preset: swell,
-        clear: false,
-        opacity: 0.4,
-      });
-      followPointer(bg);
+      const created = await createRenderer(currentMode(), host);
+      // Released (or remounted) while the renderer was loading
+      if (run !== mounting || !host.isConnected) return created.destroy();
+      renderer = created;
     } catch (error) {
       // The page is plain HTML without the artwork, so a failed load changes nothing else
-      console.warn("ASCII background unavailable:", error);
+      console.warn("Margin background unavailable:", error);
     }
   }
 
   function destroyBackground() {
     mounting++;
-    pointer?.abort();
-    pointer = null;
-    bg?.destroy();
-    bg = null;
+    renderer?.destroy();
+    renderer = null;
   }
 
-  document.addEventListener("astro:page-load", mountBackground);
+  function syncSwitch() {
+    const mode = currentMode();
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-ascii-bg]")) {
+      button.setAttribute("aria-pressed", String(button.dataset.asciiBg === mode));
+    }
+  }
+
+  /*
+   * The host sits behind the page with pointer-events: none, so the renderers never
+   * see the pointer themselves. Feed them page-wide events instead: the host is fixed
+   * at the viewport origin, so client coordinates are canvas coordinates.
+   */
+  document.addEventListener(
+    "pointermove",
+    (event) => {
+      if (event.pointerType === "touch" || reducedMotion.matches) return;
+      renderer?.move(event.clientX, event.clientY);
+    },
+    { passive: true },
+  );
+  document.documentElement.addEventListener("pointerleave", () => renderer?.leave());
+  // A ripple from every primary press, anywhere on the page
+  document.addEventListener(
+    "pointerdown",
+    (event) => {
+      if (event.button !== 0 || reducedMotion.matches) return;
+      renderer?.press(event.clientX, event.clientY);
+    },
+    { passive: true },
+  );
+
+  // Dev switch: swap renderers in place for this tab
+  document.addEventListener("click", (event) => {
+    const button = (event.target as Element | null)?.closest<HTMLButtonElement>("[data-ascii-bg]");
+    const mode = button?.dataset.asciiBg;
+    if (!isMode(mode)) return;
+    try {
+      sessionStorage.setItem(STORAGE_KEY, mode);
+    } catch {
+      return;
+    }
+    // Keep a ?bg= in the address bar from overriding the choice on reload
+    const url = new URL(location.href);
+    if (url.searchParams.has("bg")) {
+      url.searchParams.set("bg", mode);
+      history.replaceState(history.state, "", url);
+    }
+    destroyBackground();
+    mountBackground();
+    syncSwitch();
+  });
+
+  document.addEventListener("astro:page-load", () => {
+    mountBackground();
+    syncSwitch();
+  });
   // Mount or release when the window crosses the breakpoint (both return early otherwise)
   window.addEventListener("resize", () => {
     if (wide.matches) mountBackground();
-    else if (bg) destroyBackground();
+    else if (renderer) destroyBackground();
   });
 </script>

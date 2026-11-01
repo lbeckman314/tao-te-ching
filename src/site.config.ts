@@ -37,6 +37,8 @@ export interface UserConfig {
 
   recentChapters?: number;
   relatedChapters?: number;
+  // Chapters in the complete work; shows a progress tracker above the header
+  totalChapters?: number;
 
   showLogo?: boolean;
   showThemeToggle?: boolean;
@@ -69,6 +71,7 @@ const siteConfig = {
 
   recentChapters: userConfig.recentChapters ?? 6,
   relatedChapters: userConfig.relatedChapters ?? 4,
+  totalChapters: userConfig.totalChapters,
 
   showLogo: userConfig.showLogo ?? false,
   showThemeToggle: userConfig.showThemeToggle ?? true,

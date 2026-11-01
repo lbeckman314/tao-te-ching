@@ -40,6 +40,7 @@ const userConfig: UserConfig = {
 
   recentChapters: 6,
   relatedChapters: 4,
+  totalChapters: 81,
 
   showThemeToggle: true,
   showReadingTime: false,

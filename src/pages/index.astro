@@ -2,13 +2,19 @@
 import siteConfig from '@/site.config';
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SEO from "@/components/SEO.astro";
-import { getAllChapters } from "@/utils/content";
+import { getAllChapters, getChapterBook } from "@/utils/content";
 import HomeHero from "@/components/content/HomeHero.astro";
 import { generateWebsiteSchema } from "@/utils/schema";
 import RecentChapters from '@/components/content/RecentChapters.astro';
 import Footer from '@/components/Footer.astro';
 
 const allChapters = await getAllChapters();
+const books = [1, 2]
+	.map((book) => ({
+		book,
+		chapters: allChapters.filter((chapter) => getChapterBook(chapter) === book),
+	}))
+	.filter(({ chapters }) => chapters.length > 0);
 const structuredData = generateWebsiteSchema();
 ---
 <BaseLayout schema={structuredData}>
@@ -17,7 +23,9 @@ const structuredData = generateWebsiteSchema();
 	
 	<HomeHero />
 	<!-- <MastHead /> -->
-	<RecentChapters chapters={allChapters} sectionTitle="Chapters" />
+	{books.map(({ book, chapters }) => (
+		<RecentChapters chapters={chapters} sectionTitle={`Book ${book}`} />
+	))}
 	<Fragment slot="footer">
     <Footer />
   </Fragment>

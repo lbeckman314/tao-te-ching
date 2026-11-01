@@ -3,6 +3,7 @@ import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import icon from 'astro-icon';
 import siteConfig from './src/site.config';
 import rehypeUnwrapImages from 'rehype-unwrap-images';
 import rehypeSlug from "rehype-slug";
@@ -11,6 +12,7 @@ import { rawFonts } from "./src/plugins/rawFonts";
 import { unified } from '@astrojs/markdown-remark';
 import remarkBreaks from 'remark-breaks';
 import remarkCallouts from './src/plugins/remark-callouts';
+import remarkIcons from './src/plugins/remark-icons';
 import { remarkImageProcessing } from './src/plugins/remark-image-processing';
 import { remarkExternalLinks } from './src/plugins/remark-external-links.ts';
 import { remarkObsidian } from './src/plugins/remark-obsidian.ts';
@@ -127,7 +129,10 @@ export default defineConfig({
 
   integrations: [
     mdx(), 
-    sitemap()
+    sitemap(),
+    // <Icon name="github" /> → src/assets/github.svg,
+    // <Icon name="simple-icons:github" /> → @iconify-json/simple-icons
+    icon({ iconDir: "src/assets" }),
   ],
 
   build: {
@@ -148,6 +153,7 @@ export default defineConfig({
         remarkExternalLinks,
         remarkImageProcessing,
         remarkCallouts,
+        remarkIcons,
         remarkBreaks,
       ],
       rehypePlugins: [

@@ -1,0 +1,184 @@
+---
+import siteConfig from "@/site.config";
+import { getAllChapters, getChapterBook } from "@/utils/content";
+import { getAssetPath } from "@/utils/url";
+
+const total = siteConfig.totalChapters;
+// Published chapters only in builds; dev also counts drafts, like the chapter list
+const chapters = total ? await getAllChapters() : [];
+
+// Book 1 is chapters 1-37, Book 2 the rest (see getChapterBook)
+const bookTotals = { 1: Math.min(37, total ?? 0), 2: Math.max((total ?? 0) - 37, 0) };
+const books = ([1, 2] as const)
+  .filter((book) => bookTotals[book] > 0)
+  .map((book) => {
+    const bookTotal = bookTotals[book];
+    const added = Math.min(
+      chapters.filter((chapter) => getChapterBook(chapter) === book).length,
+      bookTotal,
+    );
+    return { book, added, total: bookTotal, percent: Math.round((added / bookTotal) * 100) };
+  });
+---
+{total && (
+  <div class="chapter-progress font-ui text-xs text-muted-foreground" id="chapter-progress" data-pagefind-ignore>
+    <div class="app-layout flex items-start gap-3">
+      <div class="chapter-progress-panel" id="chapter-progress-panel">
+        <div class="chapter-progress-clip">
+          <div class="chapter-progress-rows py-2">
+            {books.map(({ book, added, total, percent }) => (
+              <div class="chapter-progress-row">
+                <span>Book {book}:</span>
+                <a href={getAssetPath("/chapters")} class="link-hover tabular-nums" id={`chapter-progress-label-${book}`}>
+                  {added === total ? `All ${total} chapters` : `${added} of ${total} chapters`}
+                </a>
+                <progress
+                  class="chapter-progress-meter"
+                  value={added}
+                  max={total}
+                  aria-labelledby={`chapter-progress-label-${book}`}
+                >
+                  {percent}%
+                </progress>
+                <span class="tabular-nums text-right" aria-hidden="true">{percent}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="chapter-progress-toggle link-hover shrink-0 py-2"
+        aria-controls="chapter-progress-panel"
+        aria-expanded="true"
+        aria-label="Chapter progress"
+        title="Hide chapter progress"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+    </div>
+  </div>
+)}
+
+<!--
+  Inline so the saved preference applies before first paint (no flash of the bar),
+  and data-astro-rerun so it runs again after each client-side navigation swaps in
+  a fresh copy of the markup.
+-->
+<script is:inline data-astro-rerun>
+  (() => {
+    const KEY = "chapter-progress";
+    const root = document.getElementById("chapter-progress");
+    if (!root) return;
+
+    const panel = root.querySelector(".chapter-progress-panel");
+    const button = root.querySelector(".chapter-progress-toggle");
+
+    const setHidden = (hidden) => {
+      root.toggleAttribute("data-hidden", hidden);
+      // Keep the collapsed link out of the tab order
+      panel.inert = hidden;
+      button.setAttribute("aria-expanded", String(!hidden));
+      button.title = hidden ? "Show chapter progress" : "Hide chapter progress";
+    };
+
+    try {
+      setHidden(localStorage.getItem(KEY) === "hidden");
+    } catch (_) {}
+
+    button.addEventListener("click", () => {
+      const hidden = !root.hasAttribute("data-hidden");
+      setHidden(hidden);
+      try {
+        if (hidden) localStorage.setItem(KEY, "hidden");
+        else localStorage.removeItem(KEY);
+      } catch (_) {}
+    });
+  })();
+</script>
+
+<style>
+  /* Collapses to zero height by animating the single grid row 1fr → 0fr */
+  .chapter-progress-panel {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 200ms ease, opacity 200ms ease;
+  }
+
+  .chapter-progress-clip {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .chapter-progress[data-hidden] .chapter-progress-panel {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .chapter-progress-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 0;
+    cursor: pointer;
+    color: inherit;
+  }
+
+  /* Points up ("raise") while open, down ("lower") while collapsed */
+  .chapter-progress-toggle svg {
+    transform: rotate(180deg);
+    transition: transform 200ms ease;
+  }
+
+  .chapter-progress[data-hidden] .chapter-progress-toggle svg {
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter-progress-panel,
+    .chapter-progress-toggle svg {
+      transition: none;
+    }
+  }
+
+  /* Subgrid keeps both books' labels, bars and percentages in aligned columns */
+  .chapter-progress-rows {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    column-gap: 0.75rem;
+    row-gap: 0.25rem;
+    align-items: center;
+  }
+
+  .chapter-progress-row {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    align-items: center;
+  }
+
+  .chapter-progress-meter {
+    width: 100%;
+    min-width: 0;
+    height: 2px;
+    border: 0;
+    border-radius: 1px;
+    appearance: none;
+    overflow: hidden;
+    background: var(--border);
+    color: var(--primary);
+  }
+
+  .chapter-progress-meter::-webkit-progress-bar {
+    background: var(--border);
+  }
+
+  .chapter-progress-meter::-webkit-progress-value {
+    background: var(--primary);
+  }
+
+  .chapter-progress-meter::-moz-progress-bar {
+    background: var(--primary);
+  }
+</style>

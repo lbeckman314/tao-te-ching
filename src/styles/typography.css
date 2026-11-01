@@ -200,6 +200,84 @@
   }
 
   /* =========================================
+     Callouts / Admonitions
+     Rendered by src/plugins/remark-callouts.ts from
+     `> [!TYPE] Optional title` blockquotes.
+     ========================================= */
+
+  .app-prose :where(.callout) {
+    --callout-color: var(--callout-note);
+    @apply my-6 rounded-lg border px-4 py-3;
+    border-color: color-mix(in oklab, var(--callout-color) 35%, var(--border));
+    border-inline-start: 3px solid var(--callout-color);
+    background: color-mix(in oklab, var(--callout-color) 7%, var(--background));
+  }
+
+  .app-prose :where(.callout-tip)       { --callout-color: var(--callout-tip); }
+  .app-prose :where(.callout-important) { --callout-color: var(--callout-important); }
+  .app-prose :where(.callout-warning)   { --callout-color: var(--callout-warning); }
+  .app-prose :where(.callout-caution)   { --callout-color: var(--callout-caution); }
+
+  .app-prose :where(.callout__title) {
+    @apply flex items-center gap-2 font-ui text-sm font-semibold;
+    color: var(--callout-color);
+  }
+
+  .app-prose :where(.callout__icon) {
+    @apply shrink-0;
+  }
+
+  .app-prose :where(.callout__content) {
+    @apply mt-2;
+  }
+
+  .app-prose :where(.callout__content) > :first-child {
+    @apply mt-0;
+  }
+
+  .app-prose :where(.callout__content) > :last-child {
+    @apply mb-0;
+  }
+
+  /* Collapsible: [!type]+ / [!type]- → <details> */
+  /* Re-assert box styles over the generic `details` rule below
+     (outside :where so it wins on specificity) */
+  .app-prose details.callout {
+    @apply rounded-lg px-4 py-3;
+    border-inline-start: 3px solid var(--callout-color);
+  }
+
+  .app-prose :where(details.callout summary) {
+    @apply cursor-pointer list-none select-none;
+  }
+
+  .app-prose :where(details.callout summary)::-webkit-details-marker {
+    display: none;
+  }
+
+  .app-prose :where(.callout__toggle-icon) {
+    @apply ms-auto shrink-0 transition-transform;
+    transform: rotate(-90deg);
+  }
+
+  .app-prose :where(details.callout[open] .callout__toggle-icon) {
+    transform: none;
+  }
+
+  .app-prose :where(details.callout:not([open]) .callout__content) {
+    display: none;
+  }
+
+  /* =========================================
+     Inline icons
+     `:name:` → src/assets/name.svg via src/plugins/remark-icons.ts
+     ========================================= */
+
+  .app-prose :where(.inline-icon) {
+    @apply inline-block size-[1em] shrink-0 align-[-0.125em];
+  }
+
+  /* =========================================
      Tables
      ========================================= */
 

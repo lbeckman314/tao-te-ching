@@ -30,6 +30,12 @@
   --ring                : var(--brand);
   --primary             : var(--brand);
   --primary-foreground  : #FFFFFF;
+
+  --callout-note        : #3B6EA8;
+  --callout-tip         : #4A7D4E;
+  --callout-important   : #7A55A8;
+  --callout-warning     : #A86F12;
+  --callout-caution     : #B23B2E;
 }
 
 /* Dark theme values */
@@ -48,6 +54,12 @@
   --ring                : var(--brand);
   --primary             : var(--brand);
   --primary-foreground  : #FFFFFF;
+
+  --callout-note        : #7FA8D6;
+  --callout-tip         : #8CBF85;
+  --callout-important   : #B49AD8;
+  --callout-warning     : #D9A74A;
+  --callout-caution     : #E57F70;
 }
 
 

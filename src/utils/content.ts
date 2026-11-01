@@ -133,6 +133,24 @@ export async function getAllTagArchives(): Promise<TagArchive[]> {
     );
 }
 
+export type Book = 1 | 2;
+
+/**
+ * Determine which book a chapter belongs to.
+ * 
+ * Book 1: Chapters 1-37
+ * Book 2: Chapters 38-81
+ */
+export function getChapterBook(chapter: Chapter): Book {
+  const number = Number.parseInt(chapter.id, 10);
+
+  if (Number.isNaN(number) || number < 1 || number > 81) {
+    throw new Error(`Invalid chapter number: ${chapter.id}`);
+  }
+
+  return number <= 37 ? 1 : 2;
+}
+
 /**
  * Remove hidden folders and normalize directory segments.
  *
