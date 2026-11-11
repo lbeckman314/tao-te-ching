@@ -19,6 +19,63 @@ export type OgImageOptions = {
 const WIDTH = 1200;
 const HEIGHT = 630;
 
+type SatoriFont = {
+  name: string;
+  data: ArrayBuffer;
+  weight: 400 | 700;
+  style: "normal";
+};
+
+// The bundled Noto fonts are Latin-only. For CJK text, satori asks for extra
+// fonts per language; fetch a Google Fonts subset containing just the
+// characters needed (a few KB), so no large CJK font has to be committed.
+const CJK_FAMILIES: Record<string, string> = {
+  "zh-TW": "Noto Serif TC",
+  "zh-HK": "Noto Serif TC",
+  "ja-JP": "Noto Serif JP",
+  "ko-KR": "Noto Serif KR",
+};
+
+const fontCache = new Map<string, Promise<SatoriFont[]>>();
+
+async function fetchSubsetFonts(family: string, text: string): Promise<SatoriFont[]> {
+  const cssUrl =
+    `https://fonts.googleapis.com/css2?family=${family.replaceAll(" ", "+")}` +
+    `:wght@400;700&text=${encodeURIComponent(text)}`;
+  // Google Fonts serves TrueType (which satori needs) to non-browser clients.
+  const css = await (await fetch(cssUrl)).text();
+  const faces = [...css.matchAll(/font-weight:\s*(\d+);[^}]*?src:\s*url\(([^)]+)\)/g)];
+
+  return Promise.all(
+    faces.map(async ([, weight, url]) => ({
+      name: family,
+      data: await (await fetch(url)).arrayBuffer(),
+      weight: Number(weight) === 700 ? 700 : 400,
+      style: "normal" as const,
+    }))
+  );
+}
+
+async function loadAdditionalAsset(languageCode: string, segment: string) {
+  if (languageCode === "emoji" || languageCode === "unknown") return [];
+
+  const family = CJK_FAMILIES[languageCode] ?? "Noto Serif SC";
+  const key = `${family}|${segment}`;
+
+  if (!fontCache.has(key)) {
+    fontCache.set(
+      key,
+      fetchSubsetFonts(family, segment).catch((error) => {
+        // Don't fail the build over a missing glyph font; the text just won't render.
+        console.warn(`[og] Could not load ${family} for "${segment}":`, error);
+        return [];
+      })
+    );
+  }
+
+  return fontCache.get(key)!;
+}
+
 function formatDate(date?: Date) {
   if (!date) return "";
 
@@ -155,6 +212,7 @@ export async function generateOgImage({
       style: "normal",
     },
   ],
+    loadAdditionalAsset,
   });
 
   const resvg = new Resvg(svg);

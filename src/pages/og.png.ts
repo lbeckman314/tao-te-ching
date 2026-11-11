@@ -15,8 +15,7 @@ export const GET: APIRoute =
     const png =
       await generateOgImage(
         {
-          // The OG fonts have no CJK glyphs, so drop the Chinese title
-          title: siteConfig.title.replace(/[　-鿿]/g, "").trim(),
+          title: siteConfig.title,
 
           description:
             siteConfig.description,
