@@ -22,16 +22,16 @@ const commitLabel = commit ? `Built from commit ${commit.slice(0, 7)}` : "Local 
   <div class="app-layout">
     <div class="flex flex-col items-center">
       <span class="block mb-3 text-xl font-semibold tracking-tight">
-        {siteConfig.author}<span class="text-primary font-normal">.</span>
+        {siteConfig.title}
       </span>
-      <span class="font-code text-muted-foreground text-balance tracking-wide text-sm text-center leading-relaxed" set:html={meta} />
-      {annotation && (
+      <span class="text-muted-foreground text-balance tracking-wide text-sm text-center leading-relaxed" set:html={meta} />
+      <!-- {annotation && (
         <span class="font-annotation block text-primary max-w-70 md:max-w-80 mx-auto mt-6 text-xl md:text-2xl text-center -rotate-1 leading-snug">
           {annotation}
         </span>
-      )}
+      )} -->
       {siteConfig.rightsNotice && (
-        <p class="font-ui text-muted-foreground text-xs text-center text-balance leading-relaxed max-w-md mx-auto mt-6">
+        <p class="font-ui text-muted-foreground text-xs text-center text-balance leading-relaxed max-w-md mx-auto mt-4">
           {siteConfig.rightsNotice}
         </p>
       )}
@@ -40,8 +40,8 @@ const commitLabel = commit ? `Built from commit ${commit.slice(0, 7)}` : "Local 
           href={commitUrl}
           target="_blank"
           rel="noopener"
-          class="font-code text-muted-foreground text-xs mt-4 link-hover"
-          title={commit ? `Built from commit ${commit}` : "Local build"}
+          class="text-muted-foreground text-xs mt-4 link-hover"
+          title={commit ? `${commit}` : "Local build"}
         >
           {commitLabel}
         </a>
