@@ -1,6 +1,7 @@
 import { visit } from 'unist-util-visit';
 import type { Plugin } from 'unified';
 import type { Root, Blockquote, Paragraph, Text, PhrasingContent, BlockContent } from 'mdast';
+import { tablerIconSvg } from './tabler-icons';
 
 /**
  * Remark Callouts Plugin
@@ -14,40 +15,27 @@ import type { Root, Blockquote, Paragraph, Text, PhrasingContent, BlockContent }
  * quote, abstract, summary, tldr
  */
 
-// ── Icon SVG paths ────────────────────────────────────────────────────────────
-// Tabler icons (outline, @tabler/icons 3.51.0), named by role; the Tabler name is noted where it differs
+// ── Icons ─────────────────────────────────────────────────────────────────────
+// Callout icon roles → Tabler icon names (@iconify-json/tabler)
 
-const iconPaths: Record<string, string> = {
-  // info-circle
-  info: '<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 9h.01"/><path d="M11 12h1v4h1"/>',
-  // bulb
-  lightbulb:
-    '<path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7"/><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3"/><path d="M9.7 17l4.6 0"/>',
-  star: '<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"/>',
-  // alert-triangle
-  'triangle-alert':
-    '<path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0"/><path d="M12 16h.01"/>',
-  // alert-circle
-  'circle-alert':
-    '<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
-  'circle-x':
-    '<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M10 10l4 4m0 -4l-4 4"/>',
-  // help-circle
-  'circle-help':
-    '<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 16v.01"/><path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483"/>',
-  'circle-check':
-    '<path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 12l2 2l4 -4"/>',
-  bug: '<path d="M9 9v-1a3 3 0 0 1 6 0v1"/><path d="M8 9h8a6 6 0 0 1 1 3v3a5 5 0 0 1 -10 0v-3a6 6 0 0 1 1 -3"/><path d="M3 13l4 0"/><path d="M17 13l4 0"/><path d="M12 20l0 -6"/><path d="M4 19l3.35 -2"/><path d="M20 19l-3.35 -2"/><path d="M4 7l3.75 2.4"/><path d="M20 7l-3.75 2.4"/>',
-  code: '<path d="M7 8l-4 4l4 4"/><path d="M17 8l4 4l-4 4"/><path d="M14 4l-4 16"/>',
-  quote:
-    '<path d="M10 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5"/><path d="M19 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5"/>',
-  'file-text':
-    '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2"/><path d="M9 9l1 0"/><path d="M9 13l6 0"/><path d="M9 17l6 0"/>',
+const iconNames: Record<string, string> = {
+  info: 'info-circle',
+  lightbulb: 'bulb',
+  star: 'star',
+  'triangle-alert': 'alert-triangle',
+  'circle-alert': 'alert-circle',
+  'circle-x': 'circle-x',
+  'circle-help': 'help-circle',
+  'circle-check': 'circle-check',
+  bug: 'bug',
+  code: 'code',
+  quote: 'quote',
+  'file-text': 'file-text',
 };
 
 function getIconSVG(iconName: string): string {
-  const path = iconPaths[iconName] || iconPaths['info'];
-  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="callout__icon">${path}</svg>`;
+  const name = iconNames[iconName] ?? iconNames.info;
+  return tablerIconSvg(name, 'width="16" height="16" class="callout__icon" aria-hidden="true"') ?? '';
 }
 
 // ── Callout type map ──────────────────────────────────────────────────────────
@@ -129,7 +117,7 @@ const remarkCallouts: Plugin<[], Root> = () => {
         titleChildren.push({
           type: 'html',
           value:
-            '<svg class="callout__toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6l6 -6"/></svg>', // Tabler chevron-down
+            tablerIconSvg('chevron-down', 'class="callout__toggle-icon" width="16" height="16" aria-hidden="true"') ?? '',
         });
       }
 

@@ -1,12 +1,10 @@
 ---
 import siteConfig from "@/site.config";
 import { getAssetPath } from "@/utils/url";
-import SunIcon from "@/assets/sun.svg";
-import MoonIcon from "@/assets/moon.svg";
-import GitHubIcon from "@/assets/github.svg";
-import InfoCircleIcon from "@/assets/info-circle.svg";
+import { Icon } from "astro-icon/components";
 
-const navIcons = { github: GitHubIcon, "info-circle": InfoCircleIcon };
+// Nav item icons (site.config `icon`) → Tabler icon names
+const navIcons = { github: "tabler:brand-github", "info-circle": "tabler:info-circle" } as const;
 
 const pathname = Astro.url.pathname;
 
@@ -55,17 +53,17 @@ function isActive(url: string) {
       <nav class="flex items-center gap-4 sm:gap-4 font-ui text-sm">
         {
           siteConfig.navigation.map((item) => {
-            const Icon = item.icon && navIcons[item.icon];
+            const icon = item.icon && navIcons[item.icon];
             return (
               <a
                 href={getAssetPath(item.url)}
-                class:list={["nav-link link-hover tracking-wide header-link", { "header-link-icon": Icon }]}
+                class:list={["nav-link link-hover tracking-wide header-link", { "header-link-icon": icon }]}
                 aria-current={isActive(item.url) ? "page" : undefined}
-                title={Icon ? item.title : undefined}
+                title={icon ? item.title : undefined}
               >
-                {Icon ? (
+                {icon ? (
                   <>
-                    <Icon width={18} height={18} aria-hidden="true" />
+                    <Icon name={icon} size={18} aria-hidden="true" />
                     <span class="sr-only">{item.title}</span>
                   </>
                 ) : (
@@ -90,8 +88,8 @@ function isActive(url: string) {
               aria-pressed="false"
               title="Switch to dark theme"
             >
-              <MoonIcon class="theme-icon-moon" width={18} height={18} aria-hidden="true" />
-              <SunIcon class="theme-icon-sun" width={18} height={18} aria-hidden="true" />
+              <Icon name="tabler:moon" class="theme-icon-moon" size={18} aria-hidden="true" />
+              <Icon name="tabler:sun" class="theme-icon-sun" size={18} aria-hidden="true" />
             </button>
           </>
         )

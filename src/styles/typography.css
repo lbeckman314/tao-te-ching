@@ -270,7 +270,7 @@
 
   /* =========================================
      Inline icons
-     `:name:` → src/assets/name.svg via src/plugins/remark-icons.ts
+     `:name:` → a Tabler icon (or src/assets/name.svg) via src/plugins/remark-icons.ts
      ========================================= */
 
   .app-prose :where(.inline-icon) {

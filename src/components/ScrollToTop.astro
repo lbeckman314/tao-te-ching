@@ -1,12 +1,12 @@
 ---
-import ChevronUp from "@/assets/chevron-up.svg"
+import { Icon } from "astro-icon/components";
 ---
 <button
   id="scroll-to-top" class="scroll-to-top"
   aria-label="Scroll to top"
   hidden
 >
-  <ChevronUp class="size-5 text-muted-foreground" />
+  <Icon name="tabler:chevron-up" class="size-5 text-muted-foreground" aria-hidden="true" />
 </button>
 
 <script>

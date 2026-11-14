@@ -1,5 +1,5 @@
 ---
-import HomeIcon from "@/assets/home.svg"
+import { Icon } from "astro-icon/components";
 import { getAssetPath } from "@/utils/url";
 
 // Path within the site, without the base (e.g. "/tao-te-ching")
@@ -45,7 +45,7 @@ const breadcrumbs = segments.map(
         href={getAssetPath("/")}
         class="flex gap-1 items-center hover:text-foreground transition-colors"
       >
-        <HomeIcon class="text-muted-forground size-4"/>
+        <Icon name="tabler:home" class="text-muted-forground size-4" aria-hidden="true" />
         Home
       </a>
 

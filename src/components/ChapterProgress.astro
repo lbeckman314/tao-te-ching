@@ -2,6 +2,7 @@
 import siteConfig from "@/site.config";
 import { getAllChapters, getChapterBook } from "@/utils/content";
 import { getAssetPath } from "@/utils/url";
+import { Icon } from "astro-icon/components";
 
 const total = siteConfig.totalChapters;
 // Published chapters only in builds; dev also counts drafts, like the chapter list
@@ -42,7 +43,7 @@ const books = ([1, 2] as const)
                 </progress>
                 <span class="tabular-nums text-right" aria-hidden="true">{percent}%</span>
                 {added === total ? (
-                  <svg class="text-green-600" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label={`Book ${book} complete`}><path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14"/><path d="M9 12l2 2l4 -4"/></svg>
+                  <Icon name="tabler:square-check" is:inline class="chapter-progress-done text-green-600" size={12} role="img" aria-label={`Book ${book} complete`} />
                 ) : (
                   <span aria-hidden="true"></span>
                 )}
@@ -59,7 +60,7 @@ const books = ([1, 2] as const)
         aria-label="Chapter progress"
         title="Hide chapter progress"
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6l6 -6"/></svg>
+        <Icon name="tabler:chevron-down" size={14} aria-hidden="true" />
       </button>
     </div>
   </div>
@@ -161,6 +162,14 @@ const books = ([1, 2] as const)
     grid-column: 1 / -1;
     grid-template-columns: subgrid;
     align-items: center;
+  }
+
+  /*
+   * A heavier check than Tabler's default 2: its paths set stroke-width, so CSS overrides it
+   * (the icon is is:inline so its paths are real children rather than a <use> copy)
+   */
+  .chapter-progress-done :global(*) {
+    stroke-width: 2.5;
   }
 
   .chapter-progress-meter {

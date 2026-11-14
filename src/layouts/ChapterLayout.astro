@@ -16,7 +16,7 @@ import ImageWrapper from "@/components/ImageWrapper.astro";
 import ChapterGallery from "@/components/content/ChapterGallery.astro";
 import GalleryInit from "@/components/GalleryInit.astro";
 import { getAssetPath, getEditUrl } from "@/utils/url";
-import GitHubIcon from "@/assets/github.svg";
+import { Icon } from "astro-icon/components";
 
 type Props = {
   chapter: Chapter;
@@ -100,7 +100,7 @@ const zhStanzas = chapter.data.zh
             rel="noopener"
             class="inline-flex items-center gap-1 link-hover"
           >
-            <GitHubIcon class="size-3.5 self-center" aria-hidden="true" />
+            <Icon name="tabler:brand-github" class="size-3.5 self-center" aria-hidden="true" />
             Edit on GitHub
           </a>
         )}
