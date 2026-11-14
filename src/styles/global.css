@@ -157,7 +157,6 @@ html {
   .nav-link {
     @apply relative inline-flex min-h-10 items-center no-underline text-muted-foreground transition-colors duration-200;
     @apply hover:text-primary active:text-primary;
-    @apply aria-[current=page]:text-primary;
 
     @apply after:absolute after:-bottom-0.5 after:left-1/2 after:h-0.5 after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-accent;
     @apply after:transition-[width] after:duration-200;
