@@ -25,6 +25,9 @@ const chaptersCollection = defineCollection({
     draft: z.boolean().default(false),
     lang: z.string().optional(),
     annotation: z.string().optional(),
+    // Original Chinese text (Wang Bi received text, Traditional characters).
+    // Blank lines separate stanzas; each line renders on its own line.
+    zh: z.string().optional(),
   })
 });
 

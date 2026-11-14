@@ -53,6 +53,10 @@ const structuredData = generateChapterSchema(chapter);
 const coverImage = getCoverImage(cover);
 const galleryImages = getGalleryImages(chapter.filePath ?? '');
 const editUrl = getEditUrl(chapter.filePath);
+const zhStanzas = chapter.data.zh
+  ?.trim()
+  .split(/\n\s*\n/)
+  .map((stanza) => stanza.split("\n").map((line) => line.trim()).filter(Boolean));
 ---
 
 <BaseLayout schema={structuredData}>
@@ -120,11 +124,24 @@ const editUrl = getEditUrl(chapter.filePath);
       {tags?.map((tag) => (
         <meta data-pagefind-filter="tag[content]" content={tag} />
       ))}
-      <!-- Rendered markdown -->
-	    <div class="app-prose post-content">
-	      <slot />
-        <hr />
-	    </div>
+      <!-- Original Chinese + rendered markdown -->
+      <div class={zhStanzas ? "chapter-bilingual" : undefined}>
+        {zhStanzas && (
+          <aside class="chapter-zh" lang="zh-Hant" aria-label="Original Chinese text">
+            {zhStanzas.map((lines) => (
+              <p>
+                {lines.map((line, i) => (
+                  <Fragment>{i > 0 && <br />}{line}</Fragment>
+                ))}
+              </p>
+            ))}
+          </aside>
+        )}
+        <div class="app-prose post-content" lang="en">
+          <slot />
+          <hr />
+        </div>
+      </div>
       <!-- Galley -->
       {galleryImages.length > 0 && (
         <ChapterGallery images={galleryImages} galleryId={chapter.id} />

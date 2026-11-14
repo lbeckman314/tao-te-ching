@@ -59,7 +59,7 @@
      ========================================= */
 
   .app-prose :where(a) {
-    @apply text-foreground decoration-border underline underline-offset-4 transition-colors hover:text-primary hover:decoration-accent;
+    @apply text-foreground decoration-border underline underline-offset-4 transition-colors hover:text-primary hover:decoration-accent active:text-primary active:decoration-accent;
   }
 
   /* =========================================

@@ -1,5 +1,7 @@
 import type { UserConfig } from "../src/site.config";
 
+const repositoryUrl = "https://github.com/lbeckman314/tao-te-ching";
+
 const userConfig: UserConfig = {
   title: "Tao Te Ching · 道德经",
   description:
@@ -18,7 +20,8 @@ const userConfig: UserConfig = {
   avatar: "/avatar.png",
 
   navigation: [
-    { title: "About", url: "/about" },
+    { title: "About", url: "/about", icon: "info-circle" },
+    { title: "Source", url: repositoryUrl, icon: "github" },
   ],
 
   footerLinks: [
@@ -28,7 +31,7 @@ const userConfig: UserConfig = {
   social: [],
 
   repository: {
-    url: "https://github.com/lbeckman314/tao-te-ching",
+    url: repositoryUrl,
     branch: "main",
   },
 

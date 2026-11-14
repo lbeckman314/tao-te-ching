@@ -22,7 +22,7 @@ const {
   <SectionHeader title={sectionTitle} subheading={sectionDesc} />
   <div class="flex flex-col space-y-4 mt-4">
     {chapters.map((chapter) => (
-      <div class="flex flex-col space-y-3 py-4 first:pt-0 border-b last:border-0 border-border/50 group hover:translate-x-2 transition-transform ease-fluid">
+      <div class="flex flex-col space-y-3 py-4 first:pt-0 border-b last:border-0 border-border/50">
         <ChapterTitle chapter={chapter}
           class="text-base md:text-xl font-medium text-balance leading-snug link-hover"/>
         {chapter.data.description && (

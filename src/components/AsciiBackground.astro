@@ -1,101 +1,154 @@
 <!--
-  Decorative ground in the side margins of every page: Asciify's "Swell".
-  transition:persist carries the same canvas across client-side navigations,
-  so the field keeps running between pages.
+  Decorative ground behind every page. Wide screens: Asciify's "Swell" in the side
+  margins. Narrow screens (no margins): a blank field that answers touches with faint
+  ASCII ripples. transition:persist carries the same canvas across client-side
+  navigations, so the field keeps running between pages.
 -->
 <div id="ascii-background" class="ascii-background" aria-hidden="true" transition:persist="ascii-background"></div>
 
 <style>
-  /*
-   * A fixed layer behind the whole page, so the side margins carry the field top to
-   * bottom at every scroll position. The mask cuts out the 42rem content column
-   * (max-w-app); the field fades in over 4rem from the column edge.
-   */
+  /* A fixed layer behind the whole page, at every scroll position */
   .ascii-background {
-    --column: 21rem;
-    --fade: 4rem;
+    /* Faint ink for the touch ripples, which pass behind text */
+    --dot-ink: var(--base-200);
 
     position: fixed;
     inset: 0;
     z-index: -1;
     background: var(--background);
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to right, #000 calc(50% - var(--column) - var(--fade)), transparent calc(50% - var(--column)), transparent calc(50% + var(--column)), #000 calc(50% + var(--column) + var(--fade)));
-    mask-image: linear-gradient(to right, #000 calc(50% - var(--column) - var(--fade)), transparent calc(50% - var(--column)), transparent calc(50% + var(--column)), #000 calc(50% + var(--column) + var(--fade)));
   }
 
-  /* No real margins on narrow screens (the script skips the renderer there too) */
-  @media (max-width: 52rem) {
+  :global([data-theme="dark"]) .ascii-background {
+    --dot-ink: var(--base-900);
+  }
+
+  /*
+   * With side margins, the mask cuts out the 42rem content column (max-w-app);
+   * the field fades in over 4rem from the column edge.
+   */
+  @media (min-width: 52.01rem) {
     .ascii-background {
-      display: none;
+      --column: 21rem;
+      --fade: 4rem;
+
+      -webkit-mask-image: linear-gradient(to right, #000 calc(50% - var(--column) - var(--fade)), transparent calc(50% - var(--column)), transparent calc(50% + var(--column)), #000 calc(50% + var(--column) + var(--fade)));
+      mask-image: linear-gradient(to right, #000 calc(50% - var(--column) - var(--fade)), transparent calc(50% - var(--column)), transparent calc(50% + var(--column)), #000 calc(50% + var(--column) + var(--fade)));
     }
   }
 </style>
 
 <script>
-  // Matches the CSS breakpoint that hides the layer when there are no side margins
+  import { mountDotRipple } from "@/utils/dot-ripple";
+
+  type Mode = "swell" | "touch";
+
+  /** What the page-wide pointer listeners talk to, whichever renderer is mounted. */
+  interface Renderer {
+    move(x: number, y: number): void;
+    leave(): void;
+    press(x: number, y: number): void;
+    destroy(): void;
+  }
+
+  // Matches the CSS breakpoint where the side margins (and the mask) begin
   const wide = window.matchMedia("(min-width: 52.01rem)");
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  type Background = ReturnType<typeof import("asciify-engine/kit").background>;
-
-  let bg: Background | null = null;
+  let renderer: Renderer | null = null;
+  // The mode mounted or being mounted, so repeated resizes don't restart it
+  let mode: Mode | null = null;
   let mounting = 0;
+
+  async function createRenderer(next: Mode, host: HTMLElement): Promise<Renderer> {
+    if (next === "touch") {
+      // Blank at rest; each touch sends faint ASCII ripples through the water model
+      const ripple = mountDotRipple(host, {
+        ramp: " ·∙•●",
+        cell: 12,
+        damping: 0.8,
+        rain: false,
+        seed: false,
+        // The water keeps ringing behind each front; false gives one ring per touch
+        echoes: true,
+      });
+      return { ...ripple, leave() {} };
+    }
+
+    const { background, swell } = await import("asciify-engine/kit");
+    // Swell at its site defaults: dots, 10px cells, speed 1, lantern hover, graphite
+    // ink that follows light and dark. The CSS mask keeps it out of the text column.
+    const bg = background(host, { preset: swell, clear: false, opacity: 0.4 });
+    return {
+      move: (x, y) => bg.field?.pointer(x, y),
+      leave: () => bg.field?.pointer(null),
+      press: (x, y) => bg.field?.pulse({ x, y }),
+      destroy: () => bg.destroy(),
+    };
+  }
 
   async function mountBackground() {
     const host = document.getElementById("ascii-background");
+    const next: Mode = wide.matches ? "swell" : "touch";
     // Already running: the persisted host (and its canvas) moved to the new page
-    if (!host || bg || !wide.matches) return;
+    if (!host || mode === next) return;
 
+    destroyBackground();
+    mode = next;
     const run = ++mounting;
     try {
-      const { background, swell } = await import("asciify-engine/kit");
-      // Released (or remounted) while the engine was loading
-      if (run !== mounting || !host.isConnected) return;
-      // Swell at its site defaults: dots, 10px cells, speed 1, lantern hover, graphite
-      // ink that follows light and dark. The CSS mask keeps it out of the text column.
-      bg = background(host, { preset: swell, clear: false, opacity: 0.4 });
+      const created = await createRenderer(next, host);
+      // Released (or swapped) while the renderer was loading
+      if (run !== mounting || !host.isConnected) return created.destroy();
+      renderer = created;
     } catch (error) {
       // The page is plain HTML without the artwork, so a failed load changes nothing else
-      console.warn("Margin background unavailable:", error);
+      console.warn("Background unavailable:", error);
     }
   }
 
   function destroyBackground() {
     mounting++;
-    bg?.destroy();
-    bg = null;
+    renderer?.destroy();
+    renderer = null;
+    mode = null;
   }
 
   /*
-   * The host sits behind the page with pointer-events: none, so the field never
-   * sees the pointer itself. Feed it page-wide events instead: the host is fixed
+   * The host sits behind the page with pointer-events: none, so the renderers never
+   * see the pointer themselves. Feed them page-wide events instead: the host is fixed
    * at the viewport origin, so client coordinates are canvas coordinates.
    */
   document.addEventListener(
     "pointermove",
     (event) => {
+      // Touch drags arrive through touchmove below, which keeps firing while the page scrolls
       if (event.pointerType === "touch" || reducedMotion.matches) return;
-      bg?.field?.pointer(event.clientX, event.clientY);
+      renderer?.move(event.clientX, event.clientY);
     },
     { passive: true },
   );
-  document.documentElement.addEventListener("pointerleave", () => bg?.field?.pointer(null));
-  // A ripple from every primary press, anywhere on the page
+  document.addEventListener(
+    "touchmove",
+    (event) => {
+      if (wide.matches || reducedMotion.matches) return;
+      for (const touch of event.changedTouches) renderer?.move(touch.clientX, touch.clientY);
+    },
+    { passive: true },
+  );
+  document.documentElement.addEventListener("pointerleave", () => renderer?.leave());
+  // A ripple from every primary press or tap, anywhere on the page
   document.addEventListener(
     "pointerdown",
     (event) => {
       if (event.button !== 0 || reducedMotion.matches) return;
-      bg?.field?.pulse({ x: event.clientX, y: event.clientY });
+      renderer?.press(event.clientX, event.clientY);
     },
     { passive: true },
   );
 
   document.addEventListener("astro:page-load", mountBackground);
-  // Mount or release when the window crosses the breakpoint (both return early otherwise)
-  window.addEventListener("resize", () => {
-    if (wide.matches) mountBackground();
-    else if (bg) destroyBackground();
-  });
+  // Swap renderers when the window crosses the breakpoint (returns early otherwise)
+  window.addEventListener("resize", mountBackground);
 </script>

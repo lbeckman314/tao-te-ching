@@ -105,8 +105,9 @@ html {
 }
 
 
+/* hover: only applies with a real pointer, so active: gives touch screens the same feedback while pressed */
 @utility link-hover {
-  @apply hover:text-primary transition-colors duration-200 ease-fluid;
+  @apply hover:text-primary active:text-primary transition-colors duration-200 ease-fluid;
 }
 
 @utility inline-cta {
@@ -140,6 +141,7 @@ html {
     &:hover {
       @apply text-primary shadow-md -translate-y-0.5;
     }
+    &:active { @apply text-primary; }
     &[hidden] { @apply hidden; }
 
     animation: scroll-to-top-fade linear both;
@@ -154,14 +156,14 @@ html {
 
   .nav-link {
     @apply relative inline-flex min-h-10 items-center no-underline text-muted-foreground transition-colors duration-200;
-    @apply hover:text-primary;
+    @apply hover:text-primary active:text-primary;
     @apply aria-[current=page]:text-primary;
 
     @apply after:absolute after:-bottom-0.5 after:left-1/2 after:h-0.5 after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-accent;
     @apply after:transition-[width] after:duration-200;
     @apply after:content-[''];
 
-    @apply hover:after:w-full;
+    @apply hover:after:w-full active:after:w-full;
   }
 
   .divider {
@@ -200,6 +202,39 @@ html {
     content: "·";
     margin-right: .5rem;
     margin-left: .25rem;
+  }
+
+  /* ── Bilingual chapter (original Chinese + English) ─ */
+  .chapter-bilingual {
+    @apply grid gap-6;
+  }
+
+  @media (min-width: 768px) {
+    .chapter-bilingual {
+      grid-template-columns: max-content minmax(0, 1fr);
+      column-gap: 3rem;
+    }
+
+    .chapter-zh {
+      @apply sticky self-start;
+      top: 6rem;
+    }
+  }
+
+  .chapter-zh {
+    font-family: "Noto Serif TC", "Songti TC", "PMingLiU", "Source Han Serif TC", var(--font-content), serif;
+    @apply text-lg text-muted-foreground;
+    /* Match the English prose rhythm so stanzas start roughly level. */
+    line-height: 1.78rem;
+    letter-spacing: 0.08em;
+
+    p:first-child {
+      margin-top: 1.64rem;
+    }
+
+    p + p {
+      margin-top: 1.37rem;
+    }
   }
 
   /* ── Gallery ─────────────────────────────────────── */

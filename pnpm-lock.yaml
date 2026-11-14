@@ -26,6 +26,9 @@ importers:
       '@iconify-json/simple-icons':
         specifier: ^1.2.101
         version: 1.2.101
+      '@iconify-json/tabler':
+        specifier: ^1.2.45
+        version: 1.2.45
       '@resvg/resvg-js':
         specifier: ^2.6.2
         version: 2.6.2
@@ -608,6 +611,9 @@ packages:
 
   '@iconify-json/simple-icons@1.2.101':
     resolution: {integrity: sha512-MXJkMZDancJ/9I+Bgdthi9kXvn3AwWStxoTHwEPwAFQ9kMLBASO1BSstg52fNtjXeizm1Wi91R+QnWxNGkWHPQ==}
+
+  '@iconify-json/tabler@1.2.45':
+    resolution: {integrity: sha512-4JEFGeOGq0rP+neKaG1VaSNb/ptCUeS9fDsQpPAs1Mlt5mCh3gZs/EhqVyxm5fXIcMQcz7Y9Q46udrEyIZhD9g==}
 
   '@iconify/tools@5.0.14':
     resolution: {integrity: sha512-wJ4ZE3/HZh2iBqLwG+8FOMHe7CMJAJqwSXZSpPwMdj1gZM3Z4t2hbQMVw4Vm45oQ985qn0g89PUIcDEdKTheBA==}
@@ -2985,6 +2991,10 @@ snapshots:
     optional: true
 
   '@iconify-json/simple-icons@1.2.101':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/tabler@1.2.45':
     dependencies:
       '@iconify/types': 2.0.0
 

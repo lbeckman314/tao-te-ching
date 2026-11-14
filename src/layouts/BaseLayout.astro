@@ -19,7 +19,8 @@ const { lang = "en", schema } = Astro.props;
     <slot name="seo" slot="seo" />
     <slot name="head" slot="head" />
   </Head>
-  <body class="font-content bg-background text-foreground selection:bg-selection">
+  <!-- An empty touchstart handler lets iOS Safari apply :active (pressed link styles) on tap -->
+  <body class="font-content bg-background text-foreground selection:bg-selection" ontouchstart="">
     <AsciiBackground />
 
     <Header />

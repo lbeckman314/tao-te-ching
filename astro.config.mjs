@@ -131,7 +131,7 @@ export default defineConfig({
     mdx(), 
     sitemap(),
     // <Icon name="github" /> → src/assets/github.svg,
-    // <Icon name="simple-icons:github" /> → @iconify-json/simple-icons
+    // <Icon name="tabler:brand-github" /> → @iconify-json/tabler (also @iconify-json/simple-icons)
     icon({ iconDir: "src/assets" }),
   ],
 

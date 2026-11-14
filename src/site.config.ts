@@ -3,6 +3,8 @@ import userConfig from "../configs/user.config";
 export interface NavItem {
   title: string;
   url: string;
+  // Shown in place of the title, which stays as the link's accessible name and tooltip
+  icon?: "github" | "info-circle";
 }
 
 export interface SocialItem {

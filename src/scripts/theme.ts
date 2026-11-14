@@ -47,6 +47,17 @@ function applyTheme(theme: Theme) {
   };
 
   updateThemeColor(theme);
+  updateThemeToggle(theme);
+}
+
+// The toggle is a "Dark theme" switch: pressed while dark, its tooltip names the next theme
+function updateThemeToggle(theme: Theme) {
+  const button = document.querySelector<HTMLButtonElement>("#theme-toggle");
+
+  if (!button) return;
+
+  button.setAttribute("aria-pressed", String(theme === DARK));
+  button.title = theme === DARK ? "Switch to light theme" : "Switch to dark theme";
 }
 
 function updateThemeColor(
