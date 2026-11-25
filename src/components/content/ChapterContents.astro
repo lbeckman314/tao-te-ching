@@ -1,7 +1,7 @@
 ---
-// Table of contents merged with each book's progress: every book is a collapsible
-// section whose heading row shows how many of its chapters have been added, and whose
-// list links to each chapter's place on the same page.
+// Table of contents merged with each book's progress: beside each book's title,
+// a bar shows how many of its chapters have been added, and a list links to each
+// chapter's place on the same page.
 import siteConfig from "@/site.config";
 import { type Book, type Chapter, getChapterAnchor } from "@/utils/content";
 import { Icon } from "astro-icon/components";
@@ -29,15 +29,15 @@ const books = Astro.props.books.map(({ book, chapters }) => {
 ---
 <nav
   aria-label="Contents"
-  id="chapter-contents"
-  class="font-ui text-xs text-muted-foreground"
+  class="chapter-contents font-ui text-xs text-muted-foreground"
   data-pagefind-ignore
   data-scroll-top-after
 >
   {books.map(({ book, chapters, added, total, percent }) => (
-    <details class="contents-book" data-book={book} open>
-      <summary class="contents-summary py-2 link-hover">
+    <div class="contents-book">
+      <div class="contents-progress py-2">
         <span class="font-code text-sm font-medium uppercase tracking-[0.15em]">Book {book}</span>
+        <span class="text-border" aria-hidden="true">|</span>
         <span class="tabular-nums">
           {added === total ? `All ${total} chapters` : `${added} of ${total} chapters`}
         </span>
@@ -49,15 +49,14 @@ const books = Astro.props.books.map(({ book, chapters }) => {
         >
           {percent}%
         </progress>
-        <span class="tabular-nums text-right" aria-hidden="true">{percent}%</span>
-        {added === total ? (
-          <Icon name="tabler:square-check" is:inline class="contents-done text-green-600" size={12} role="img" aria-label={`Book ${book} complete`} />
-        ) : (
-          <span aria-hidden="true"></span>
-        )}
-        <Icon name="tabler:chevron-down" class="contents-chevron" size={14} aria-hidden="true" />
-      </summary>
-      <ul class="pt-1 pb-6 gap-x-6 columns-2 sm:columns-3">
+        <span class="flex items-center justify-between gap-2">
+          <span class="tabular-nums hidden sm:inline" aria-hidden="true">{percent}%</span>
+          {added === total && (
+            <Icon name="tabler:square-check" is:inline class="contents-done text-green-600" size={12} role="img" aria-label={`Book ${book} complete`} />
+          )}
+        </span>
+      </div>
+      <ul class="gap-x-6 columns-2 sm:columns-3">
         {chapters.map((chapter) => (
           <li class="break-inside-avoid">
             <a href={`#${getChapterAnchor(chapter)}`} class="block py-1 link-hover">
@@ -66,61 +65,36 @@ const books = Astro.props.books.map(({ book, chapters }) => {
           </li>
         ))}
       </ul>
-    </details>
+    </div>
   ))}
 </nav>
 
-<!--
-  Inline so saved open/closed choices apply before first paint, and data-astro-rerun so
-  it runs again after each client-side navigation swaps in a fresh copy of the markup.
--->
-<script is:inline data-astro-rerun>
-  (() => {
-    for (const details of document.querySelectorAll("#chapter-contents details")) {
-      const key = `contents-book-${details.dataset.book}`;
-
-      try {
-        if (localStorage.getItem(key) === "closed") details.open = false;
-      } catch (_) {}
-
-      details.addEventListener("toggle", () => {
-        try {
-          if (details.open) localStorage.removeItem(key);
-          else localStorage.setItem(key, "closed");
-        } catch (_) {}
-      });
-    }
-  })();
-</script>
-
 <style>
-  /* Fixed label columns keep both books' bars aligned */
-  .contents-summary {
+  /*
+   * Text columns fit their contents and never wrap; the bar takes what's left.
+   * Subgrid shares the columns between books, so their bars line up.
+   */
+  .chapter-contents {
     display: grid;
-    grid-template-columns: 4.75rem 7.25rem minmax(0, 1fr) 2.5rem 12px 14px;
+    grid-template-columns: max-content max-content max-content minmax(0, 1fr) minmax(12px, max-content);
     column-gap: 0.5rem;
+    row-gap: 1.5rem;
+  }
+
+  .contents-book,
+  .contents-progress {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
     align-items: center;
-    cursor: pointer;
-    list-style: none;
   }
 
-  .contents-summary::-webkit-details-marker {
-    display: none;
+  .contents-book > :global(*) {
+    grid-column: 1 / -1;
   }
 
-  /* Down while collapsed ("show"), up while open ("hide") */
-  .contents-chevron {
-    transition: transform 200ms ease;
-  }
-
-  .contents-book[open] .contents-chevron {
-    transform: rotate(180deg);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .contents-chevron {
-      transition: none;
-    }
+  .contents-progress {
+    white-space: nowrap;
   }
 
   /*
