@@ -1,5 +1,6 @@
 ---
 import siteConfig from "@/site.config";
+import { commitDate } from "@/utils/git";
 
 export interface Props {
   meta?: string;
@@ -14,7 +15,8 @@ const {
 const commit = process.env.GITHUB_SHA;
 const repoUrl = siteConfig.repository?.url.replace(/\/+$/, "");
 const commitUrl = repoUrl && (commit ? `${repoUrl}/commit/${commit}` : `${repoUrl}/commits/`);
-const commitLabel = commit ? `${commit.slice(0, 7)}` : "Local build´";
+// Falls back to the short hash if the commit's date can't be read
+const commitLabel = commitDate ? `Updated ${commitDate}` : (commit?.slice(0, 7) ?? "Local build");
 ---
 
 <footer class="border-border bg-background mt-12 border-t py-8 ">
