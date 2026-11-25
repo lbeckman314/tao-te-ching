@@ -1,5 +1,5 @@
 ---
-title: 22. Growing Downward
+title: Growing Downward
 ---
 
 Be broken to be whole.

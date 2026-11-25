@@ -1,5 +1,5 @@
 ---
-title: 37. Over all
+title: Over all
 ---
 
 The Way never does anything,
@@ -16,4 +16,4 @@ is not wanting.
 In not wanting is stillness.
 In stillness all under heaven rests.
 
-> Here the themes of not doind and not wanting, the unnamed and the unshapen, recur together in one pure legato. It is wonderful how by negatives and privatives Lao Tzu gives a sense of serene, inexhaustible fullness of being.
+> Here the themes of not doing and not wanting, the unnamed and the unshapen, recur together in one pure legato. It is wonderful how by negatives and privatives Lao Tzu gives a sense of serene, inexhaustible fullness of being.

@@ -1,32 +1,79 @@
 ---
+// The whole book on one page. No data-pagefind-body: search results should lead to
+// the individual chapter pages rather than here.
+import { render } from "astro:content";
 import siteConfig from '@/site.config';
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import SEO from "@/components/SEO.astro";
-import { getAllChapters, getChapterBook } from "@/utils/content";
+import { type Book, getAllChapters, getChapterAnchor, getChapterBook } from "@/utils/content";
 import HomeHero from "@/components/content/HomeHero.astro";
+import ChapterContents from "@/components/content/ChapterContents.astro";
+import ChapterText from "@/components/content/ChapterText.astro";
+import ChapterTitle from "@/components/content/ChapterTitle.astro";
+import ReadingProgress from "@/components/ReadingProgress.astro";
 import { generateWebsiteSchema } from "@/utils/schema";
-import RecentChapters from '@/components/content/RecentChapters.astro';
 import Footer from '@/components/Footer.astro';
 
 const allChapters = await getAllChapters();
-const books = [1, 2]
+const books = ([1, 2] as Book[])
 	.map((book) => ({
 		book,
 		chapters: allChapters.filter((chapter) => getChapterBook(chapter) === book),
 	}))
 	.filter(({ chapters }) => chapters.length > 0);
+
+const rendered = new Map(
+	await Promise.all(
+		allChapters.map(async (chapter) => [chapter.id, (await render(chapter)).Content] as const),
+	),
+);
 const structuredData = generateWebsiteSchema();
 ---
 <BaseLayout schema={structuredData}>
 	<SEO slot="seo" title="Home" description={siteConfig.description} />
 	<h1 class="sr-only">{siteConfig.title}</h1>
-	
+	<ReadingProgress />
+
 	<HomeHero />
-	<!-- <MastHead /> -->
+	<ChapterContents books={books} />
 	{books.map(({ book, chapters }) => (
-		<RecentChapters chapters={chapters} sectionTitle={`Book ${book}`} />
+		<section aria-label={`Book ${book}`}>
+			{chapters.map((chapter) => {
+				const Content = rendered.get(chapter.id)!;
+				return (
+					<article
+						id={getChapterAnchor(chapter)}
+						aria-label={chapter.data.title}
+						class="chapter-entry py-10 border-b border-border/50 last:border-0"
+					>
+						<ChapterTitle
+							chapter={chapter}
+							class="text-2xl leading-tight font-medium mb-2 link-hover"
+						/>
+						{chapter.data.description && (
+							<p class="text-sm italic leading-normal text-muted-foreground">{chapter.data.description}</p>
+						)}
+						<ChapterText chapter={chapter}>
+							<Content />
+						</ChapterText>
+					</article>
+				);
+			})}
+		</section>
 	))}
 	<Fragment slot="footer">
     <Footer />
   </Fragment>
 </BaseLayout>
+
+<style>
+	/* Land below the sticky header when following a #chapter-N link */
+	.chapter-entry {
+		scroll-margin-top: 4.5rem;
+	}
+
+	/* Jump straight to a chapter; smooth scrolling past dozens of them takes too long */
+	:global(html:has(.chapter-entry)) {
+		scroll-behavior: auto;
+	}
+</style>

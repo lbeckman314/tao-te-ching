@@ -1,5 +1,5 @@
 ---
-title: 23. Nothing and Not
+title: Nothing and Not
 ---
 
 Nature doesn't make long speeches.

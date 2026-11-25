@@ -1,5 +1,5 @@
 ---
-title: 31. Against War
+title: Against War
 ---
 
 Even the best weapon

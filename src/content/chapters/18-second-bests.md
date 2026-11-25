@@ -1,5 +1,5 @@
 ---
-title: 18. Second Bests
+title: Second Bests
 ---
 
 In the degradation of the great way

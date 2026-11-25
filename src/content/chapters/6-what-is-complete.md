@@ -1,5 +1,5 @@
 ---
-title: 6. What is Complete
+title: What is Complete
 ---
 
 The valley spirit never dies.

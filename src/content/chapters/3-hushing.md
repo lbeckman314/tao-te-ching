@@ -1,5 +1,5 @@
 ---
-title: 3. Hushing
+title: Hushing
 ---
 
 Not praising the praiseworthy

@@ -1,5 +1,5 @@
 ---
-title: 13. Shameless
+title: Shameless
 ---
 
 To be in favor or disgrace

@@ -1,5 +1,5 @@
 ---
-title: 36. The Small Dark Light
+title: The Small Dark Light
 ---
 
 What seeks to shrink

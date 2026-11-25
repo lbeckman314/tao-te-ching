@@ -1,5 +1,5 @@
 ---
-title: 16. Returning to the Root
+title: Returning to the Root
 ---
 
 Be completely empty.

@@ -1,5 +1,5 @@
 ---
-title: 33. Kinds of Power
+title: Kinds of Power
 ---
 
 Knowing other people is intelligence,

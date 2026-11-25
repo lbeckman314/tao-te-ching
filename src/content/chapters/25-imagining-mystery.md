@@ -1,5 +1,5 @@
 ---
-title: 25. Imagining Mystery
+title: Imagining Mystery
 ---
 
 There is something

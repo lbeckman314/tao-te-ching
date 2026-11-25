@@ -1,5 +1,5 @@
 ---
-title: 35. Humane Power
+title: Humane Power
 ---
 
 Hold fast to the great thought

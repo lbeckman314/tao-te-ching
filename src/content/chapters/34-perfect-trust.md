@@ -1,5 +1,5 @@
 ---
-title: 34. Perfect Trust
+title: Perfect Trust
 ---
 
 The Great Way runs

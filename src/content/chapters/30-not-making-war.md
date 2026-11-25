@@ -1,5 +1,5 @@
 ---
-title: 30. Not Making War
+title: Not Making War
 ---
 
 A Taoist wouldn't advise a ruler

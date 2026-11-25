@@ -1,5 +1,5 @@
 ---
-title: 11. The Uses of Not
+title: The Uses of Not
 ---
 
 Thirty spokes

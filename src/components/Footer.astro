@@ -8,7 +8,6 @@ export interface Props {
 
 const {
   meta = `Translation by ${siteConfig.translator}`,
-  annotation = siteConfig.annotation,
 } = Astro.props;
 
 // Set by GitHub Actions to the commit being built; absent in local builds
@@ -25,11 +24,7 @@ const commitLabel = commit ? `${commit.slice(0, 7)}` : "Local build´";
         {siteConfig.title}
       </span>
       <span class="text-muted-foreground text-balance tracking-wide text-sm text-center leading-relaxed" set:html={meta} />
-      <!-- {annotation && (
-        <span class="font-annotation block text-primary max-w-70 md:max-w-80 mx-auto mt-6 text-xl md:text-2xl text-center -rotate-1 leading-snug">
-          {annotation}
-        </span>
-      )} -->
+
       {siteConfig.rightsNotice && (
         <p class="font-ui text-muted-foreground text-xs text-center text-balance leading-relaxed max-w-md mx-auto mt-4">
           {siteConfig.rightsNotice}

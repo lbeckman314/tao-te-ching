@@ -1,5 +1,5 @@
 ---
-title: 10. Techniques
+title: Techniques
 ---
 
 Can you keep your soul in its body,

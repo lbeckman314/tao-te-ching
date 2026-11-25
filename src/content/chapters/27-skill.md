@@ -1,5 +1,5 @@
 ---
-title: 27. Skill
+title: Skill
 ---
 
 Good walkers leave no track.

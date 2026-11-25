@@ -1,5 +1,5 @@
 ---
-title: 9. Being Quiet
+title: Being Quiet
 ---
 
 Brim-fill the bowl,

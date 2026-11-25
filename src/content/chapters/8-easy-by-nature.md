@@ -1,5 +1,5 @@
 ---
-title: 8. Easy By Nature
+title: Easy By Nature
 ---
 
 True goodness

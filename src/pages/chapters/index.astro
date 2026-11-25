@@ -1,5 +1,5 @@
 ---
-import { getAllChapters } from "@/utils/content";
+import { getAllChapters, getAllChaptersUrl } from "@/utils/content";
 import PageLayout from "@/layouts/PageLayout.astro";
 import ChapterFeed from "@/components/content/ChapterFeed.astro";
 import PageHeader from "@/components/PageHeader.astro";
@@ -14,7 +14,11 @@ const description = "Browse all published chapters.";
   showHeader={false}
 >
 
-  <PageHeader {title} subheading={description} />
+  <PageHeader {title} subheading={description}>
+    <a slot="meta" href={getAllChaptersUrl()} class="font-ui text-xs link-hover">
+      Read on a single page
+    </a>
+  </PageHeader>
 
   <ChapterFeed
     chapters={chapters}

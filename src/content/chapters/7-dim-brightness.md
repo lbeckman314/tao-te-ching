@@ -1,5 +1,5 @@
 ---
-title: 7. Dim Brightness
+title: Dim Brightness
 ---
 
 Heaven will last,

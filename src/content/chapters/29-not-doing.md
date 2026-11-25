@@ -1,5 +1,5 @@
 ---
-title: 29. Not Doing
+title: Not Doing
 ---
 
 Those who think to win the world

@@ -1,33 +1,86 @@
 ---
+// "Back to top" button. Appears once the element marked data-scroll-top-after (the
+// home page's table of contents) has scrolled out of view above; on pages without
+// one, after 400px. Using it swaps it for a "return" button in the same corner, which
+// goes back to where the reader was, until they scroll back into the text themselves.
 import { Icon } from "astro-icon/components";
 ---
 <button
-  id="scroll-to-top" class="scroll-to-top"
-  aria-label="Scroll to top"
-  hidden
+  type="button"
+  id="scroll-to-top"
+  class="scroll-to-top"
+  aria-label="Back to top"
+  title="Back to top"
 >
-  <Icon name="tabler:chevron-up" class="size-5 text-muted-foreground" aria-hidden="true" />
+  <Icon name="tabler:arrow-up" class="size-5" aria-hidden="true" />
+</button>
+<button
+  type="button"
+  id="scroll-return"
+  class="scroll-to-top"
+  aria-label="Return to previous position"
+  title="Return to previous position"
+>
+  <Icon name="tabler:arrow-back-up" class="size-5" aria-hidden="true" />
 </button>
 
 <script>
-  const btn = document.getElementById('scroll-to-top');
-  if (!btn) throw new Error('scroll-to-top button not found');
+  let observer: IntersectionObserver | undefined;
 
-  // Use IntersectionObserver on a sentinel at page top
-  const sentinel = document.createElement('div');
-  sentinel.style.cssText = 'position:absolute;top:0;left:0;height:1px;width:1px;pointer-events:none;';
-  document.body.prepend(sentinel);
+  function mountScrollToTop() {
+    observer?.disconnect();
 
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      btn.hidden = entry.isIntersecting;
-    },
-    { threshold: 0, rootMargin: '400px 0px 0px 0px' }
-  );
+    const btn = document.getElementById("scroll-to-top");
+    const returnBtn = document.getElementById("scroll-return");
+    if (!btn || !returnBtn) return;
 
-  observer.observe(sentinel);
+    // Where "back to top" was last used, while returning there is on offer
+    let returnTo: number | null = null;
+    let clickedAt = 0;
 
-  btn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+    const marker = document.querySelector("[data-scroll-top-after]");
+
+    // The area reaches far below the viewport, so "not intersecting" can only mean
+    // "above": short windows and jumps straight past the marker work too.
+    // The top edge is the bottom of the sticky header, or 400px up without a marker.
+    const header = document.querySelector<HTMLElement>(".site-header");
+    const top = marker ? -(header?.offsetHeight ?? 0) : 400;
+
+    observer = new IntersectionObserver(
+      (entries) => {
+        const past = !entries[entries.length - 1].isIntersecting;
+        // Back in the text, by returning or by scrolling: the offer is over
+        if (past) returnTo = null;
+
+        btn.toggleAttribute("data-visible", past);
+        returnBtn.toggleAttribute("data-visible", !past && returnTo !== null);
+      },
+      { rootMargin: `${top}px 0px 1000000px 0px` },
+    );
+    observer.observe(marker ?? createSentinel());
+
+    // Follows the page's own scroll-behavior: instant on the long home page, smooth elsewhere
+    btn.onclick = () => {
+      returnTo = window.scrollY;
+      clickedAt = performance.now();
+      window.scrollTo({ top: 0 });
+    };
+
+    returnBtn.onclick = () => {
+      // Both buttons share a spot: the second half of a double-click isn't a return
+      if (returnTo === null || performance.now() - clickedAt < 400) return;
+      window.scrollTo({ top: returnTo });
+    };
+  }
+
+  function createSentinel() {
+    const sentinel = document.createElement("div");
+    sentinel.style.cssText =
+      "position:absolute;top:0;left:0;height:1px;width:1px;pointer-events:none;";
+    document.body.prepend(sentinel);
+    return sentinel;
+  }
+
+  // Runs on first load and after each client-side navigation
+  document.addEventListener("astro:page-load", mountScrollToTop);
 </script>

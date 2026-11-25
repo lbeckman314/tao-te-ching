@@ -1,5 +1,5 @@
 ---
-title: 12. Not Wanting
+title: Not Wanting
 ---
 
 The five colors

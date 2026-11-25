@@ -1,5 +1,5 @@
 ---
-title: 1. Taoing
+title: Taoing
 ---
 
 The way you can go

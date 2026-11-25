@@ -1,5 +1,5 @@
 ---
-title: 26. Power of the Heavy
+title: Power of the Heavy
 ---
 
 Heavy is the root of light.

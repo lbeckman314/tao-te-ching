@@ -1,5 +1,5 @@
 ---
-title: 24. Proportion
+title: Proportion
 ---
 
 You can't keep standing on tiptoe

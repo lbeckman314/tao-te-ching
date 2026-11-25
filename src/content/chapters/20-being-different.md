@@ -1,5 +1,5 @@
 ---
-title: 20. Being Different
+title: Being Different
 ---
 
 How much difference between yes and no?

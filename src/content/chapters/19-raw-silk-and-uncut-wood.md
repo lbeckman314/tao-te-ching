@@ -1,5 +1,5 @@
 ---
-title: 19. Raw Silk and Uncut Wood
+title: Raw Silk and Uncut Wood
 ---
 
 Stop being holy, forget being prudent,

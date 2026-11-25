@@ -1,5 +1,5 @@
 ---
-title: 15. People of Power
+title: People of Power
 ---
 
 Once upon a time

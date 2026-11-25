@@ -1,5 +1,5 @@
 ---
-title: 17. Acting Simply
+title: Acting Simply
 ---
 
 True leaders

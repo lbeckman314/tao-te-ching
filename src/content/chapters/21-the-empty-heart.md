@@ -1,5 +1,5 @@
 ---
-title: 21. The Empty Heart
+title: The Empty Heart
 ---
 
 The greatest power is the gift

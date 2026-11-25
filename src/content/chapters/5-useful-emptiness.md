@@ -1,5 +1,5 @@
 ---
-title: 5. Useful Emptiness
+title: Useful Emptiness
 ---
 
 Heaven and earth aren't humane.

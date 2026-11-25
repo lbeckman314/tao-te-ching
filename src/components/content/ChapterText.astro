@@ -1,0 +1,32 @@
+---
+// A chapter's text: the original Chinese (when present) beside the rendered markdown.
+// Shared by the chapter pages and the single-page view.
+import { type Chapter } from "@/utils/content";
+
+type Props = {
+  chapter: Chapter;
+};
+
+const { chapter } = Astro.props;
+
+const zhStanzas = chapter.data.zh
+  ?.trim()
+  .split(/\n\s*\n/)
+  .map((stanza) => stanza.split("\n").map((line) => line.trim()).filter(Boolean));
+---
+<div class={zhStanzas ? "chapter-bilingual" : undefined}>
+  {zhStanzas && (
+    <aside class="chapter-zh" lang="zh-Hant" aria-label="Original Chinese text">
+      {zhStanzas.map((lines) => (
+        <p>
+          {lines.map((line, i) => (
+            <Fragment>{i > 0 && <br />}{line}</Fragment>
+          ))}
+        </p>
+      ))}
+    </aside>
+  )}
+  <div class="app-prose post-content" lang="en">
+    <slot />
+  </div>
+</div>

@@ -4,8 +4,7 @@ const repositoryUrl = "https://github.com/lbeckman314/tao-te-ching";
 
 const userConfig: UserConfig = {
   title: "Tao Te Ching · 道德经",
-  description:
-    "A Book about the Way and the Power of the Way.",
+  description: "A Book about the Way and the Power of the Way.",
 
   // Override the path the site is served under with BASE_PATH
   // (e.g. `BASE_PATH=/ pnpm dev` to serve from the root).

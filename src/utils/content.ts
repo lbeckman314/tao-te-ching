@@ -275,6 +275,28 @@ export function getChapterUrl(
 }
 
 /**
+ * Anchor of a chapter on the single-page view.
+ *
+ * Example:
+ * "8-easy-by-nature" -> "chapter-8"
+ */
+export function getChapterAnchor(chapter: Chapter): string {
+  return `chapter-${Number.parseInt(chapter.id, 10)}`;
+}
+
+/**
+ * URL of the single-page view (the home page), optionally at a given chapter.
+ *
+ * Example:
+ * "/#chapter-8"
+ */
+export function getAllChaptersUrl(chapter?: Chapter): string {
+  const url = getAssetPath("/");
+
+  return chapter ? `${url}#${getChapterAnchor(chapter)}` : url;
+}
+
+/**
  * Get adjacent chapters.
  */
 export function getAdjacentChapters<

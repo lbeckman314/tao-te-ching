@@ -1,7 +1,6 @@
 ---
 import { getEntry, render } from "astro:content";
 import siteConfig from "@/site.config";
-import ChapterProgress from "../ChapterProgress.astro";
 
 const variant = siteConfig.heroVariant;
 
@@ -13,11 +12,12 @@ const Content = homeEntry ? (await render(homeEntry)).Content : null;
     <p class="font-content italic text-3xl sm:text-4xl max-w-xl leading-snug tracking-tight wrap-break-word text-foreground">
       {siteConfig.description}
     </p>
-    <div class="h-px bg-border mt-8" />
   ) : (
     <div class="app-prose home-intro-content">
       {Content ? <Content /> : null}
     </div>
   )}
-  <ChapterProgress />
+  <span class="font-annotation block text-primary max-w-70 md:max-w-100 mx-auto mt-4 text-xl md:text-2xl text-center leading-snug">
+    All 81 chapters of the Tao Te Ching, as translated by Ursula K. Le Guin, hand-typed by a human!
+  </span>
 </section>

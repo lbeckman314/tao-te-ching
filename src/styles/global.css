@@ -131,27 +131,26 @@ html {
 
     /* ── Scroll To Top ───────────────────────────────── */
   .scroll-to-top {
-    @apply fixed bottom-20 right-6 z-50 sm:bottom-6
+    @apply fixed bottom-6 right-6 sm:right-36 z-50
            flex items-center justify-center
-           w-10 h-10 rounded-full
-           bg-muted/70 border border-border
+           w-16 h-16 rounded-full
+           bg-muted/60 border border-border
            text-muted-foreground
            shadow-sm cursor-pointer
-           transition-[color,background-color,box-shadow,opacity,transform] duration-200;
-    &:hover {
+           transition-[color,background-color,box-shadow,opacity,visibility,translate,scale] duration-300;
+
+    /* Fades and slides in; visibility (not display) so it can animate, and stays unfocusable while hidden */
+    @apply invisible opacity-0 translate-y-2;
+    &[data-visible] { @apply visible opacity-100 translate-y-0; }
+
+    &[data-visible]:hover {
       @apply text-primary shadow-md -translate-y-0.5;
     }
     &:active { @apply text-primary; }
-    &[hidden] { @apply hidden; }
 
-    animation: scroll-to-top-fade linear both;
-    animation-timeline: scroll();
-    animation-range: 0px 300px;
-  }
-
-  @keyframes scroll-to-top-fade {
-    from { opacity: 0; pointer-events: none; }
-    to   { opacity: 1; pointer-events: auto; }
+    @media (prefers-reduced-motion: reduce) {
+      @apply transition-none;
+    }
   }
 
   .nav-link {

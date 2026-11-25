@@ -1,5 +1,5 @@
 ---
-title: 28. Turning Back
+title: Turning Back
 ---
 
 Knowing man

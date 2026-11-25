@@ -1,5 +1,5 @@
 ---
-title: 32. Sacred Power
+title: Sacred Power
 ---
 
 The way goes on forever nameless.

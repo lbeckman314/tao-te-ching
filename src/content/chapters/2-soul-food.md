@@ -1,5 +1,5 @@
 ---
-title: 2. Soul Food
+title: Soul Food
 ---
 
 Everybody on earth knowing

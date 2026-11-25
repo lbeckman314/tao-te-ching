@@ -1,5 +1,5 @@
 ---
-title: 4. Sourceless
+title: Sourceless
 ---
 
 The way is empty,

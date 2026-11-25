@@ -1,5 +1,5 @@
 ---
-title: 14. Celebrating Mystery
+title: Celebrating Mystery
 ---
 
 Look at it: nothing to see.
