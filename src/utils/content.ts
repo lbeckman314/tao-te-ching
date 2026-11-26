@@ -142,13 +142,30 @@ export type Book = 1 | 2;
  * Book 2: Chapters 38-81
  */
 export function getChapterBook(chapter: Chapter): Book {
-  const number = Number.parseInt(chapter.id, 10);
+  const chapterNum = getChapterNumber(chapter);
 
+  if (chapterNum >= 1 && chapterNum <= 37) {
+    return 1;
+  } else if (chapterNum >= 38 && chapterNum <= 81) {
+    return 2;
+  }
+
+  throw new Error(`Invalid chapter number: ${chapter.id}`);
+}
+
+/**
+ * Get the chapter number from the chapter ID.
+ * 
+ * @param chapter 
+ * @returns The chapter number as a number.
+ * @throws If the chapter ID is not a valid number between 1 and 81.
+ */
+export function getChapterNumber(chapter: Chapter): number {
+  const number = Number.parseInt(chapter.id, 10);
   if (Number.isNaN(number) || number < 1 || number > 81) {
     throw new Error(`Invalid chapter number: ${chapter.id}`);
   }
-
-  return number <= 37 ? 1 : 2;
+  return number;
 }
 
 /**
@@ -281,7 +298,9 @@ export function getChapterUrl(
  * "8-easy-by-nature" -> "chapter-8"
  */
 export function getChapterAnchor(chapter: Chapter): string {
-  return `chapter-${Number.parseInt(chapter.id, 10)}`;
+  const chapterNum = getChapterNumber(chapter);
+  
+  return `chapter-${chapterNum}`;
 }
 
 /**

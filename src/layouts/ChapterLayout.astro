@@ -1,7 +1,7 @@
 ---
 import siteConfig from "@/site.config";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { type Chapter, getAllChaptersUrl, getChapterUrl } from "@/utils/content";
+import { type Chapter, getAllChaptersUrl, getChapterNumber, getChapterUrl } from "@/utils/content";
 import { slugify } from "@/utils/text";
 import { getCoverImage, getGalleryImages } from "@/utils/image";
 import Breadcrumb from "@/components/Breadcrumb.astro";
@@ -70,12 +70,14 @@ const editUrl = getEditUrl(chapter.filePath);
     <Breadcrumb />
     <!-- Chapter Header -->
     <header class="space-y-4">
+      <!-- Chapter Number -->
       <!-- Title -->
       <h1
-          class="text-3xl leading-tight tracking-tight font-medium md:text-4xl mb-2 text-balance"
-          transition:name={slugify(chapter.data.title.replaceAll(".", "-"))}
+      class="text-3xl leading-tight tracking-tight font-medium md:text-4xl mb-2 text-balance"
+      transition:name={slugify(chapter.data.title.replaceAll(".", "-"))}
       >
-          {chapter.data.title}
+        <span class="text-muted-foreground tabular-nums font-light me-2">{getChapterNumber(chapter)}.</span>
+        {chapter.data.title}
       </h1>
 
       <!-- Description -->
