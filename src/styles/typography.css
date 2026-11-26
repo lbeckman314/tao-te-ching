@@ -158,7 +158,7 @@
      ========================================= */
 
   .app-prose :where(blockquote) {
-    @apply border-primary border-s-2 ps-5 my-6;
+    @apply not-italic border-primary border-s-2 ps-5 my-6;
     quotes: none;
   }
   

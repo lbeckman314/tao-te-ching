@@ -44,7 +44,7 @@ const structuredData = generateWebsiteSchema();
 					<article
 						id={getChapterAnchor(chapter)}
 						aria-label={chapter.data.title}
-						class="chapter-entry py-10 border-b border-border/50 last:border-0"
+						class="chapter-entry py-10 relative"
 					>
 						<ChapterTitle
 							chapter={chapter}
@@ -70,6 +70,18 @@ const structuredData = generateWebsiteSchema();
 	/* Land below the sticky header when following a #chapter-N link */
 	.chapter-entry {
 		scroll-margin-top: 4.5rem;
+	}
+
+	/* Bottom border wave for each chapter entry, except the last one */
+	.chapter-entry:not(:last-child)::after {
+		content: "";
+		position: absolute;
+		inset-inline: 0;
+		bottom: 0;
+		height: 8px;
+		background-color: color-mix(in oklab, var(--color-border) 50%, transparent);
+		mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 16 8'%3E%3Cpath d='M0 4 Q4 0 8 4 T16 4' fill='none' stroke='black' stroke-width='1.5'/%3E%3C/svg%3E")
+				left center / 16px 8px round no-repeat;
 	}
 
 	/* Jump straight to a chapter; smooth scrolling past dozens of them takes too long */
