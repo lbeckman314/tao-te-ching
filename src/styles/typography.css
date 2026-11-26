@@ -174,8 +174,7 @@
   .app-prose :where(blockquote cite)::before {
     content: "— ";
   }
-  
-  
+
   /* ── Pullquote ────────────────────────────────────────────────
     A highlighted passage — larger, centred register,
     top and bottom rules only, no left rule.
