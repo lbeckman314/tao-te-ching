@@ -159,7 +159,7 @@
 
   .app-prose :where(blockquote) {
     @apply border-primary border-s-2 ps-5 my-6;
-    quotes: "\201C" "\201D" "\2018" "\2019";
+    quotes: none;
   }
   
   .app-prose :where(blockquote) p {
