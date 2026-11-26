@@ -2,8 +2,8 @@
 import { type Chapter, getChapterUrl } from "@/utils/content";
 
 interface Props {
-  prevChapter?: Chapter;
-  nextChapter?: Chapter;
+  prevChapter?: Chapter | null;
+  nextChapter?: Chapter | null;
 }
 
 const { prevChapter, nextChapter } = Astro.props;

@@ -1,5 +1,5 @@
 ---
-import { getChapterUrl, type Chapter } from "@/utils/content";
+import { getChapterNumber, getChapterUrl, type Chapter } from "@/utils/content";
 import { slugify } from "@/utils/text";
 
 type Props = {
@@ -26,6 +26,7 @@ const titleClass = [ "text-balance", className,]
   class="no-underline hover:text-primary active:text-primary"
 >
   <Heading class={titleClass} transition:name={titleSlug}>
+    <span class="text-muted-foreground tabular-nums font-light">{getChapterNumber(chapter)}.</span>
     {chapter.data.title}
   </Heading>
 </a>
