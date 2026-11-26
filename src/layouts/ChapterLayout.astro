@@ -70,13 +70,13 @@ const editUrl = getEditUrl(chapter.filePath);
     <Breadcrumb />
     <!-- Chapter Header -->
     <header class="space-y-4">
-      <!-- Chapter Number -->
       <!-- Title -->
       <h1
       class="text-3xl leading-tight tracking-tight font-medium md:text-4xl mb-2 text-balance"
       transition:name={slugify(chapter.data.title.replaceAll(".", "-"))}
       >
-        <span class="text-muted-foreground tabular-nums font-light me-2">{getChapterNumber(chapter)}.</span>
+        <!-- Chapter Number -->
+        <span class="text-muted-foreground tabular-nums font-light">{getChapterNumber(chapter)}.</span>
         {chapter.data.title}
       </h1>
 
