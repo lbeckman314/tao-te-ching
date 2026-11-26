@@ -17,10 +17,8 @@ over the hard, the strong.
 
 > This a third stanza in all the texts:
 >
-> ```
-> Fish should stay underwater:
-> the real mens of rule
-> should be kept dark.
-> ```
+> > Fish should stay underwater:
+> > the real mens of rule
+> > should be kept dark.
 >
 > Or, more literally, "the State's sharp weapons ought not to be shown to the people." This Machiavellian truism seems such an anticlimax to the great theme stated in the first verses that O treat it as an intrusion, perhaps a commentator's practical example of "the small dark light."
