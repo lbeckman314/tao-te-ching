@@ -20,8 +20,7 @@ So the wise soul,
 by never dealing with great things,
 gets great things done.
 
-Now, since taking things too lightly makes them
-    worthless,
+Now, since taking things too lightly makes them worthless,
 and taking things too easy makes them hard,
 the wise soul,
 by treating the easy as hard,

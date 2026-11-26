@@ -9,8 +9,7 @@ unfathomable.
 
 Since they're inexplicable
 I can only say what they seemed likeL
-Cautious, oh yes, as if wading through a winter
-  river.
+Cautious, oh yes, as if wading through a winter river.
 Alert, as if afraid of the neighbors.
 Polite and quiet, like houseguests.
 Elusive, like melting ice.

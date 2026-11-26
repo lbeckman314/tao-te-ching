@@ -24,4 +24,4 @@ Seek, you'll find it.
 Hide, it will shelter you.
 So it was honored under heaven.
 
-> I think the line of thought throughout the poem has do with true reward as opposed to dishonorable gain, true giving as opposed to fake goods.
+> I think the line of thought throughout the poem has do with true rewarbd as opposed to dishonorable gain, true giving as opposed to fake goods.

@@ -18,14 +18,10 @@ The louder the call for law and order,
 the more the thieves and con men multiply.
 
 So a wise leader might say:
-I practice inaction, and the people look after
-    themselves.
-I love to be quiet, and the people themselves find
-    justice.
-I don't do business, and the people prosper on their
-    own.
-I don't have wants, and the people themselves are
-    uncut wood.
+I practice inaction, and the people look after themselves.
+I love to be quiet, and the people themselves find justice.
+I don't do business, and the people prosper on their own.
+I don't have wants, and the people themselves are uncut wood.
 
 > A strong political statement of the central idea of *wu wei*, not doing, inaction.
 >
